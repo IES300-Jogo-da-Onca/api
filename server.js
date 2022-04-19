@@ -7,6 +7,7 @@ const db = require('./db.js')
 const app = express()
 
 app.use(express.urlencoded({ extended: true }))
+app.use(router)
 app.use(express.json())
 app.use(cors({
     origin: ["http://localhost:3000"],
