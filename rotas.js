@@ -1,12 +1,12 @@
 const Router = require('express').Router
 const crypto = require('crypto')
-const { verificaLogin, rotaUsuarioLogado } = require('./auth.js')
+const { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado } = require('./auth.js')
 const router = Router()
 const User = require('./models/User')
 
-router.post('/login', verificaLogin)
+router.post('/login', rotaUsuarioNaoLogado, verificaLogin)
 
-router.post('/register', async (req, res) => {
+router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
     const { nome, senha, login } = req.body
     try {
         senhaHash = crypto.createHash('sha256').update(senha).digest('hex')

@@ -6,8 +6,8 @@ const User = require('./models/User')
 */
 const verificaLogin = async (req, res) => {
     const { login, senha } = req.body
-    const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex')
     try {
+        const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex')
         const user = await User.findOne({
             attributes: ['nome', 'id', 'login', 'ehPremium', 'ehAdmin'],
             where: {
@@ -23,6 +23,7 @@ const verificaLogin = async (req, res) => {
 
     } catch (error) {
         console.error(error)
+        res.json({ status: 500, error: error.message, data: null })
     }
 }
 /**
@@ -35,5 +36,14 @@ const rotaUsuarioLogado = (req, res, next) => {
     return res.json({ status: 401, mensagem: 'usuário não logado', data: null })
 }
 
+/**
+ * rota acessivel apenas para usuario não logado
+*/
+const rotaUsuarioNaoLogado = (req, res, next) => {
+    if (!req.session.user) {
+        return next()
+    }
+    return res.json({ status: 400, mensagem: 'acessivel apenas para usuario não logado', data: null })
+}
 
-module.exports = { verificaLogin, rotaUsuarioLogado }
+module.exports = { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado }
