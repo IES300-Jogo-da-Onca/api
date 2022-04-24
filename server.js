@@ -20,19 +20,9 @@ app.use(session({
     saveUninitialized: false,
     name: 'ssid'
 }))
-
 app.use(router)
 
-if (db.getDialect() == 'mysql') {
-    db.authenticate()
-        .then(() =>
-            app.listen(process.env.PORT || 3001, () => console.log(process.env.HOST)))
-        .catch(console.error)
-}
-else {
-    db.sync({ alter: true })
-        .then(() => app.listen(3001, () => console.log('localhost:3001')))
-        .catch(console.error)
-}
-
-
+db.authenticate()
+    .then(() =>
+        app.listen(process.env.PORT || 3001, () => console.log(process.env.HOST)))
+    .catch(console.error)

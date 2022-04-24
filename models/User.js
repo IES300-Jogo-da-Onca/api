@@ -34,6 +34,11 @@ class User extends Model {
                 field: 'ehSuperUser',
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
+            },
+            moedas: {
+                allowNull: false,
+                type: DataTypes.INTEGER,
+                defaultValue: 0
             }
         }, {
             sequelize: connection,

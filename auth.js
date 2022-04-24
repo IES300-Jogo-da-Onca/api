@@ -9,7 +9,7 @@ const verificaLogin = async (req, res) => {
     try {
         const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex')
         const user = await User.findOne({
-            attributes: ['nome', 'id', 'login', 'ehPremium', 'ehAdmin'],
+            attributes: ['nome', 'id', 'login', 'ehPremium', 'ehAdmin', 'moedas'],
             where: {
                 login,
                 senha: senhaHash
