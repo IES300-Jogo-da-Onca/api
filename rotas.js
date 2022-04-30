@@ -86,6 +86,11 @@ router.post('/comprarmoeda', rotaUsuarioLogado, async (req, res) => {
 
     }
 })
-
+router.get('/logout', (req, res) => {
+    req.session.destroy((error) => {
+        if(!error ) return res.end()
+        res.status(404).json({mensagem: error.message})
+    })
+})
 router.get('*', (req, res) => res.status(404).end())
 module.exports = router
