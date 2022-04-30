@@ -1,7 +1,7 @@
-const Router = require('express').Router
+const express = require('express')
 const crypto = require('crypto')
 const { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado } = require('./auth.js')
-const router = Router()
+const router = express.Router()
 const User = require('./models/User')
 const db = require('./db')
 
@@ -12,8 +12,8 @@ router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
     try {
         senhaHash = crypto.createHash('sha256').update(senha).digest('hex')
         const user = await User.create({ nome, senha: senhaHash, login })
-        res.json({
-            status: 200, mensagem: 'usuario cadastrado', data: {
+        res.status(200).json({
+                mensagem: 'usuario cadastrado', data: {
                 id: user.id, nome: user.nome, login: user.login, ehAdmin: user.ehAdmin,
                 ehPremium: user.ehPremium, moedas: user.moedas
             }
@@ -21,9 +21,9 @@ router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
 
     } catch (error) {
         if (error.name == 'SequelizeUniqueConstraintError') {
-            return res.json({ status: 404, mensagem: 'usuário já existe' })
+            return res.status(404).json({mensagem: 'usuário já existe' })
         }
-        res.json({ status: 500, mensagem: error.message, error })
+        res.status(500).json({ mensagem: error.message, error })
     }
 })
 
@@ -50,10 +50,10 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
                 onça: item.tipoPeca == 0
             }
         })
-        res.json({ status: 200, mensagem: 'OK', data })
+        res.status(200).json({ mensagem: 'OK', data })
     } catch (error) {
         console.error(error)
-        res.json({ status: 500, message: error.message, data: null })
+        res.status(500).json({message: error.message, data: null })
     }
 
 
@@ -87,7 +87,5 @@ router.post('/comprarmoeda', rotaUsuarioLogado, async (req, res) => {
     }
 })
 
-router.get('/', rotaUsuarioLogado, (req, res) => {
-    res.json({ status: 200, mensagem: 'teste requisição de rota protegida, credencias válidas', data: req.session.user })
-})
+router.get('*', (req, res) => res.status(404).end())
 module.exports = router

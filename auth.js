@@ -17,13 +17,13 @@ const verificaLogin = async (req, res) => {
         })
         if (user) {
             req.session.user = user
-            return res.json({ status: 200, mensagem: 'usuário logado', data: user })
+            return res.status(200).json({ mensagem: 'usuário logado', data: user })
         }
-        res.json({ status: 401, mensagem: 'credenciais inválidas', data: null })
+        res.status(401).json({mensagem: 'credenciais inválidas', data: null })
 
     } catch (error) {
         console.error(error)
-        res.json({ status: 500, error: error.message, data: null })
+        res.status(500).json({ mensagem: error.message, data: null })
     }
 }
 /**
@@ -33,7 +33,7 @@ const rotaUsuarioLogado = (req, res, next) => {
     if (req.session && req.session.user) {
         return next()
     }
-    return res.json({ status: 401, mensagem: 'usuário não logado', data: null })
+    return res.status(401).json({ mensagem: 'usuário não logado', data: null })
 }
 
 /**
@@ -43,7 +43,7 @@ const rotaUsuarioNaoLogado = (req, res, next) => {
     if (!req.session.user) {
         return next()
     }
-    return res.json({ status: 400, mensagem: 'acessivel apenas para usuario não logado', data: null })
+    return res.status(400).json({ mensagem: 'acessivel apenas para usuario não logado', data: null })
 }
 
 module.exports = { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado }

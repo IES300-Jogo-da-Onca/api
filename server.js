@@ -24,5 +24,5 @@ app.use(router)
 
 db.authenticate()
     .then(() =>
-        app.listen(process.env.PORT || 3001, () => console.log(process.env.HOST)))
+        app.listen(process.env.PORT || 3001, () => console.log(process.env.HOST  || 'http://localhost/3001')))
     .catch(console.error)
