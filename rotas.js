@@ -13,7 +13,7 @@ router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
         senhaHash = crypto.createHash('sha256').update(senha).digest('hex')
         const user = await User.create({ nome, senha: senhaHash, login })
         res.status(200).json({
-                mensagem: 'usuario cadastrado', data: {
+            mensagem: 'usuario cadastrado', data: {
                 id: user.id, nome: user.nome, login: user.login, ehAdmin: user.ehAdmin,
                 ehPremium: user.ehPremium, moedas: user.moedas
             }
@@ -21,7 +21,7 @@ router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
 
     } catch (error) {
         if (error.name == 'SequelizeUniqueConstraintError') {
-            return res.status(404).json({mensagem: 'usuário já existe' })
+            return res.status(404).json({ mensagem: 'usuário já existe' })
         }
         res.status(500).json({ mensagem: error.message, error })
     }
@@ -53,7 +53,7 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
         res.status(200).json({ mensagem: 'OK', data })
     } catch (error) {
         console.error(error)
-        res.status(500).json({message: error.message, data: null })
+        res.status(500).json({ message: error.message, data: null })
     }
 
 
@@ -86,11 +86,14 @@ router.post('/comprarmoeda', rotaUsuarioLogado, async (req, res) => {
 
     }
 })
-router.get('/logout', (req, res) => {
+router.get('/logout', rotaUsuarioLogado, (req, res) => {
     req.session.destroy((error) => {
-        if(!error ) return res.end()
-        res.status(404).json({mensagem: error.message})
+        if (!error) return res.end()
+        res.status(404).json({ mensagem: error.message })
     })
 })
+
+
+
 router.get('*', (req, res) => res.status(404).end())
 module.exports = router
