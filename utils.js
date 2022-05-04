@@ -1,15 +1,17 @@
-const cache = require('memory-cache')
+const LRU = require('lru-cache')
 const TTL_SALA = 1000 * 60 * 30 // após 30 minutos a sala será apagada da memória
+cache = new LRU({ ttl: TTL_SALA, max: 1000 })
 
 const randomString = () => Math.random().toString(36).replace(/[^a-z1-9]+/g, '')
 
 const getNovaSala = (socketId) => {
+    console.log('pegando nova sala')
     try {
         let idSala = randomString()
-        while (cache.get(idSala) !== null) {
+        while (cache.get(idSala)) {
             idSala = randomString()
         }
-        cache.put(idSala, JSON.stringify({ jogadores: 1, id: idSala, onca: socketId }, TTL_SALA))
+        cache.set(idSala, JSON.stringify({ jogadores: 1, id: idSala, onca: socketId }, TTL_SALA))
         return idSala
     } catch (e) {
         console.error(e)
@@ -17,7 +19,7 @@ const getNovaSala = (socketId) => {
 }
 
 const salvarSala = (sala) => {
-    cache.put(sala.id, JSON.stringify(sala), TTL_SALA)
+    cache.set(sala.id, JSON.stringify(sala), TTL_SALA)
 }
 const removerSala = (idSala) => cache.del(idSala)
 

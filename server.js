@@ -69,6 +69,7 @@ io.on('connection', socket => {
             socket.leave(salaAntiga)
             console.log(socket.handshake.session.user.nome + ' deixou a sala ' + salaAntiga)
         }
+        console.log(novaSala)
         socket.join(novaSala)
         console.log(socket.handshake.session.user.nome + ' entrou na sala ' + novaSala)
         socket.emit('serverNovaSala', { idSala: novaSala })
