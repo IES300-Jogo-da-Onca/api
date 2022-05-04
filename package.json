@@ -1,9 +1,12 @@
 {
   "name": "jogo_onca_api",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "jest --silent=false",
+    "debug": "jest --sileit=false --runInBand"
   },
   "devDependencies": {
+    "jest": "^28.0.3",
     "memory-cache": "^0.2.0",
     "nodemon": "^2.0.15",
     "sqlite3": "^5.0.5"

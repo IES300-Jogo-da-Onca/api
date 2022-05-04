@@ -7,11 +7,13 @@ const { Server } = require("socket.io");
 const app = express()
 const router = require('./rotas.js')
 const db = require('./db.js')
-const { getNovaSala, removerSala } = require('./utils.js')
+const { getNovaSala, removerSala, getSala, salvarSala, dist } = require('./utils.js')
+const Jogo = require('./Jogo.js')
 const cookieParser = require('cookie-parser')
 const cookie = cookieParser(SECRET)
 const server = http.createServer(app)
 const store = new session.MemoryStore()
+
 app.use(cookie)
 app.use(session({
     secret: SECRET,
@@ -60,8 +62,7 @@ db.authenticate()
 
 io.on('connection', socket => {
     socket.on('novaSala', () => {
-        console.log(JSON.stringify(socket.handshake.session))
-        novaSala = getNovaSala()
+        novaSala = getNovaSala(socket.id)
         salaAntiga = socket.handshake.session.sala
         if (salaAntiga) {
             removerSala(salaAntiga)
@@ -71,5 +72,78 @@ io.on('connection', socket => {
         socket.join(novaSala)
         console.log(socket.handshake.session.user.nome + ' entrou na sala ' + novaSala)
         socket.emit('serverNovaSala', { idSala: novaSala })
+        socket.handshake.session.sala = novaSala
     })
+
+    socket.on('joinSala', (idSala) => {
+        try {
+            sala = getSala(idSala)
+            // TODO validar se o jogador está em alguma partida
+            if (sala === null) {
+                return socket.emit('serverJoinSala', {
+                    entrouNaSala: false, mensagem: 'sala não existe'
+                })
+            }
+            if (sala.jogadores > 1) {
+                return socket.emit('serverJoinSala', {
+                    entrouNaSala: false, mensagem: 'sala indisponível'
+                })
+            }
+            sala.jogadores++
+            sala.cachorro = socket.id
+            salvarSala(sala)
+            socket.join(idSala)
+            socket.handshake.session.sala = idSala
+            console.log(socket.handshake.session.user.nome + ' entrou na sala ' + novaSala)
+
+            socket.emit('serverJoinSala', {
+                entrouNaSala: true, mensagem: 'OK'
+            })
+            sala.dadosPartida = {
+                vetorTabuleiro: Jogo.getTabuleiroInicial(),
+                cachorrosCapturados: 0,
+                movimento: 0,
+                turnoPeca: 0 // 0 onca, 1 cachorro
+            }
+            //TODO recuperar as skins
+            dadosCachorro = { ehCachorro: true, ...sala.dadosPartida }
+            dadosOnca = { ehCachorro: false, ...sala.dadosPartida }
+            socket.to(sala.onca).emit('serverIniciarJogo', dadosOnca)
+            socket.emit('serverIniciarJogo', dadosCachorro)
+            salvarSala(sala)
+        } catch (error) {
+            console.log(error)
+        }
+
+    })
+
+    socket.on('moverPeca', data => {
+        sala = getSala(socket.handshake.session.sala)
+        if (!sala) {
+            return socket.emit('error', { mensagem: 'sala não existe' })
+        }
+        if (!(sala.onca === socket.id || sala.cachorro === socket.id)) {
+            return socket.emit('error', { mensagem: 'Jogador não está na partida' })
+        }
+        jogadorPodeMoverPeca = (
+            (socket.id === sala.onca && sala.dadosPartida.turnoPeca == 0) ||
+            (socket.id === sala.cachorro && sala.dadosPartida.turnoPeca == 1)
+        )
+        ehCachorro = sala.dadosPartida.turnoPeca == 1
+        const { x, y, old_x, old_y } = data
+        tabuleiro = sala.dadosPartida.vetorTabuleiro
+        if (!jogadorPodeMoverPeca || !Jogo.ehMovimentoValido(x, y, old_x, old_y, tabuleiro, ehCachorro)) {
+            return socket.emit('error', { mensagem: 'Movimento inválido', x, y, old_x, old_y })
+        }
+        novoTabuleiro = Jogo.getNovoTabuleiro(tabuleiro, x, y, old_x, old_y, ehCachorro)
+        sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
+        sala.dadosPartida.movimento++
+        if (dist(x, y, old_x, old_y) == 2) sala.dadosPartida.cachorrosCapturados++
+        io.in(socket.handshake.session.sala).emit('serverMoverPeca', {
+            novoTabuleiro,
+            turnoPeca: sala.dadosPartida.turnoPeca
+        })
+        salvarSala(sala)
+    })
+
 })
