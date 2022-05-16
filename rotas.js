@@ -93,6 +93,18 @@ router.get('/logout', rotaUsuarioLogado, (req, res) => {
     })
 })
 
+router.get('/testeHoraDB', async (req, res) => {
+    try {
+        let queryString = db.getDialect() == "mysql" ? "select now()" : "select CURRENT_TIMESTAMP"
+        const [result] = await db.query(queryString)
+        res.json(result)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json(error)
+    }
+
+})
+
 
 
 router.get('*', (req, res) => res.status(404).end())
