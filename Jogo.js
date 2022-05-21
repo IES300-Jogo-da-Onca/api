@@ -34,8 +34,8 @@ class Jogo {
         return [
             ['C', 'C', 'C', 'C', 'C'],
             ['C', 'C', 'C', 'C', 'C'],
-            ['C', 'C', 'O', 'C', 'C'],
-            ['.', '.', '.', '.', '.'],
+            ['C', 'C', 'C', 'C', 'C'],
+            ['.', 'C', '.', 'C', 'O'],
             ['.', '.', '.', '.', '.'],
             ['|', '.', '.', '.', '|'],
             ['|', '.', '.', '.', '|'],
@@ -71,7 +71,7 @@ class Jogo {
         return (vetorTabuleiro[y + direcao[1]][x + direcao[0]] == 'C' && this.posDentroDoTabuleiro(novoX, novoY) && vetorTabuleiro[novoY][novoX] == '.')
     }
 
-    static getPossiveisMovimentos(x, y, ehCachorro, vetorTabuleiro) {
+    static getPossiveisMovimentos(x, y, ehCachorro, vetorTabuleiro, houveCaptura) {
         let movimentos = []
         let posicao = vetorTabuleiro[y][x]
         if (posicao == '.' || (!ehCachorro && posicao == 'C') || (ehCachorro && posicao == 'O')) return []
@@ -81,7 +81,7 @@ class Jogo {
             if (!this.posDentroDoTabuleiro(novoX, novoY)) return []
             if (this.movimentoInvalidoNoTriangulo(x, y, novoX, novoY)) return []
             try {
-                if (vetorTabuleiro[novoY][novoX] == '.') movimentos.push([novoX, novoY])
+                if (!houveCaptura && vetorTabuleiro[novoY][novoX] == '.') movimentos.push([novoX, novoY])
                 if (!ehCachorro && this.verificaCaptura(x, y, el, vetorTabuleiro)) {
                     movimentos.push([novoX + el[0], novoY + el[1]])
                 }
@@ -100,7 +100,7 @@ class Jogo {
                 let novoY = y + el[1]
                 if (!this.posDentroDoTabuleiro(novoX, novoY) || vetorTabuleiro[novoY][novoX] == '|') return []
                 if (this.movimentoInvalidoNoTriangulo(x, y, novoX, novoY)) return []
-                if (vetorTabuleiro[novoY][novoX] == '.') movimentos.push([novoX, novoY])
+                if (!houveCaptura && vetorTabuleiro[novoY][novoX] == '.') movimentos.push([novoX, novoY])
                 if (!ehCachorro && this.verificaCaptura(x, y, el, vetorTabuleiro)) {
                     movimentos.push([novoX + el[0], novoY + el[1]])
                 }
@@ -123,11 +123,8 @@ class Jogo {
         })
         if (!ehMovimentoValido) return false
         let peca = vetorTabuleiro[old_y][old_x]
-        console.log(x, y, old_x, old_y)
-        console.log(vetorTabuleiro)
         vetorTabuleiro[old_y][old_x] = vetorTabuleiro[y][x]
         vetorTabuleiro[y][x] = peca
-        console.log(vetorTabuleiro)
 
         if (dist(old_x, old_y, x, y) === 1) return vetorTabuleiro
         let direcao = [Math.floor((y - old_y) / 2), Math.floor((x - old_x) / 2)]
@@ -135,9 +132,10 @@ class Jogo {
         return vetorTabuleiro
     }
 
-    static ehMovimentoValido(x, y, old_x, old_y, vetorTabuleiro, ehCachorro) {
+    static ehMovimentoValido(x, y, old_x, old_y, vetorTabuleiro, ehCachorro, houveCaptura) {
         let pos = vetorTabuleiro[old_y][old_x]
         if ((pos == 'C' && !ehCachorro) || (pos == 'O' && ehCachorro)) return false
+        if (!ehCachorro && houveCaptura && dist(x, y, old_x, old_y) !== 2) return false
         return this.getPossiveisMovimentos(old_x, old_y, ehCachorro, vetorTabuleiro)
             .some(pos => pos[0] === x && pos[1] === y)
     }

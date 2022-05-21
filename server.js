@@ -133,16 +133,36 @@ io.on('connection', socket => {
         ehCachorro = sala.dadosPartida.turnoPeca == 1
         const { x, y, old_x, old_y } = data
         tabuleiro = sala.dadosPartida.vetorTabuleiro
-        if (!jogadorPodeMoverPeca || !Jogo.ehMovimentoValido(x, y, old_x, old_y, tabuleiro, ehCachorro)) {
+        if (!jogadorPodeMoverPeca || !Jogo.ehMovimentoValido(x, y, old_x, old_y, tabuleiro, ehCachorro, sala.dadosPartida.houveCaptura)) {
             return socket.emit('error', { mensagem: 'Movimento inválido', x, y, old_x, old_y })
         }
         novoTabuleiro = Jogo.getNovoTabuleiro(tabuleiro, x, y, old_x, old_y, ehCachorro)
         sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
         sala.dadosPartida.movimento++
-        if (dist(x, y, old_x, old_y) == 2) sala.dadosPartida.cachorrosCapturados++
+
+        let houveCaptura = !ehCachorro && dist(x, y, old_x, old_y) == 2
+        sala.dadosPartida.houveCaptura = houveCaptura
+        if (houveCaptura) {
+            sala.dadosPartida.cachorrosCapturados++
+            oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
+                .some(item => dist(x, y, item[0], item[1] == 2))
+            if (oncaContinuaCaptura) {
+                console.log(Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true))
+                sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
+            }
+            else {
+                houveCaptura = false
+            }
+        }
+        console.log(`turno: ${sala.dadosPartida.turnoPeca}\nplacar: ${sala.dadosPartida.cachorrosCapturados}
+                \n houveCaptura: ${houveCaptura}
+        `)
         io.in(socket.handshake.session.sala).emit('serverMoverPeca', {
             novoTabuleiro,
-            turnoPeca: sala.dadosPartida.turnoPeca
+            turnoPeca: sala.dadosPartida.turnoPeca,
+            placar: sala.dadosPartida.cachorrosCapturados,
+            houveCaptura
+
         })
         salvarSala(sala)
     })

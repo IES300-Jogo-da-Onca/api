@@ -78,16 +78,12 @@ test('cachorro não pode mover onça', () => {
     expect(Jogo.ehMovimentoValido(2, 3, 2, 2, tabuleiro, true)).toBe(false)
 })
 
-test('deve ser true', () => {
+test('movimento da onça após captura', () => {
     tabuleiro = Jogo.getTabuleiroInicial()
-    expect(Jogo.ehMovimentoValido(2, 3, 2, 2, tabuleiro, false)).toBe(true)
-    expect(Jogo.ehMovimentoValido(4, 3, 4, 2, tabuleiro, false)).toBe(true)
-
+    tabuleiro[0][2] = '.'
+    movimentos = Jogo.getPossiveisMovimentos(2, 2, false, tabuleiro, true)
+    expect(movimentos.every(item => item[0] == 2 && item[1] == 0)).toBe(true)
 })
-
-// TODO:
-// test('onca captura cachorro no triangulo diagonal', () => { })
-// testar captura mais de 1 cachorro na mesma jogada
 
 
 
