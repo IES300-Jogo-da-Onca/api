@@ -4,6 +4,7 @@ const { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado } = require('./au
 const router = express.Router()
 const User = require('./models/User')
 const db = require('./db')
+const { QueryTypes } = require('sequelize')
 
 router.post('/login', rotaUsuarioNaoLogado, verificaLogin)
 
@@ -28,22 +29,27 @@ router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
 })
 
 router.get('/loja', rotaUsuarioLogado, async (req, res) => {
-    const id = req.session.user.id
     let current_time
     if (db.getDialect() == 'sqlite') current_time = 'CURRENT_TIMESTAMP'
-    else current_time = 'SYSDATE()'
+    else current_time = 'now()'
     try {
         const queryString = `
-            select valor, imagemSkin, nomeSkin, tipoPeca from venda
+            select venda.idSkin idSkin, valor, imagemSkin, nomeSkin, tipoPeca from venda
             join season on season.id = venda.idSeason
             join skin on skin.id = venda.id
-            where ${current_time} BETWEEN season.inicioVigencia and season.fimVigencia
-            and skin.ehPermanente = 0 and skin.id not in (select idSkin from compra where idUsuario = ${id})
+            where now() BETWEEN inicioVigencia and fimVigencia
+            and skin.id not in (select idSkin from compra where idUsuario = :id)
         `
-        const [results] = await db.query(queryString)
+
+        const [results] = await db.query(queryString, {
+            replacements: {
+                id: req.session.user.id
+            }
+        })
         console.log(results)
         data = results.map(item => {
             return {
+                idSkin: item.idSkin,
                 skinName: item.nomeSkin,
                 skinImg: item.imagemSkin,
                 precoSkin: item.valor,
@@ -60,15 +66,14 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
 })
 
 router.post('/comprarmoeda', rotaUsuarioLogado, async (req, res) => {
-    const { valor } = req.body
+    const { quantidade } = req.body
     const tran = await User.sequelize.transaction()
     try {
-        console.log(req.session.user)
         const user = await User.findByPk(req.session.user.id, {
             attributes: ['nome', 'id', 'login', 'ehPremium', 'ehAdmin', 'moedas'],
 
         })
-        await user.increment('moedas', { by: valor }, { transaction: tran })
+        await user.increment('moedas', { by: quantidade }, { transaction: tran })
         await tran.commit()
         await user.reload()
         res.status(200).json({
@@ -84,6 +89,52 @@ router.post('/comprarmoeda', rotaUsuarioLogado, async (req, res) => {
         console.log(user.toJson())
         res.status(500).json({ message: error.message })
 
+    }
+})
+
+router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
+    const { idSkin } = req.body
+    let result
+    try {
+        query = `
+            select @moedas:= moedas from usuario where idUsuario = :id_usuario;
+
+            select @valor:=valor from venda
+            join season on season.id = venda.idSeason
+            join skin on skin.id = venda.idSkin
+            where now() between season.inicioVigencia and season.fimVigencia
+            and prioridade = (
+                select max(prioridade) from season where 
+                now() between season.inicioVigencia and season.fimVigencia
+            )
+            and venda.idSkin = :id_skin
+            limit 1 ;
+
+            start transaction;
+                insert into compra(idUsuario, idSkin)
+                select :id_usuario, :id_skin where @moedas >= @valor
+                and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
+                
+                update usuario set moedas = moedas - @valor
+                where idUsuario = :id_usuario
+                and @moedas >= @valor
+                and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
+                select @moedas >= @valor and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
+            commit;
+        `
+        result = await db.query(query, {
+            replacements: { id_usuario: req.session.user.id, id_skin: idSkin },
+            type: QueryTypes.SELECT
+        })
+        if (Object.values(result).length && Object.values(result)[0] == 1) {
+            res.json({ mensagem: 'compra realizada' })
+        } else {
+            res.status(400).json({ mensagem: 'sem moedas suficientes' })
+        }
+    }
+    catch (error) {
+        console.error(error)
+        res.status(500).json({ error })
     }
 })
 router.get('/logout', rotaUsuarioLogado, (req, res) => {

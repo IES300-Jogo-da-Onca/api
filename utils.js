@@ -5,7 +5,6 @@ cache = new LRU({ ttl: TTL_SALA, max: 1000 })
 const randomString = () => Math.random().toString(36).replace(/[^a-z1-9]+/g, '')
 
 const getNovaSala = (socketId) => {
-    console.log('pegando nova sala')
     try {
         let idSala = randomString()
         while (cache.get(idSala)) {
