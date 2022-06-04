@@ -46,7 +46,7 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
                 id: req.session.user.id
             }
         })
-        console.log(results)
+        console.log("Returned from DB: ", results)
         data = results.map(item => {
             return {
                 idSkin: item.idSkin,
