@@ -37,9 +37,9 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
         const queryString = `
             select venda.idSkin idSkin, valor, imagemSkin, nomeSkin, tipoPeca from venda
             join season on season.id = venda.idSeason
-            join skin on skin.id = venda.id
+            join skin on skin.id = venda.idSkin
             where now() BETWEEN inicioVigencia and fimVigencia
-            and skin.id not in (select idSkin from compra where idUsuario = :id)
+            and skin.id not in (select idSkin from compra where idUsuario = :id);
         `
 
         const [results] = await db.query(queryString, {
@@ -118,17 +118,23 @@ router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
                 
                 update usuario set moedas = moedas - @valor
                 where idUsuario = :id_usuario
-                and @moedas >= @valor
-                and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
-                select @moedas >= @valor and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
+                and @moedas >= @valor;
+                select @moedas >= @valor and :id_skin in (select idSkin from compra where  idUsuario = :id_usuario),
+                moedas from usuario where idUsuario = :id_usuario;
             commit;
         `
         result = await db.query(query, {
             replacements: { id_usuario: req.session.user.id, id_skin: idSkin },
-            type: QueryTypes.SELECT
+            type: QueryTypes.SELECT,
         })
-        if (Object.values(result).length && Object.values(result)[0] == 1) {
-            res.json({ mensagem: 'compra realizada' })
+        // console.log(Object.values(result[5]))
+        let resposta = {}
+        Object.entries(result[5]['0']).forEach(item => {
+            if (item[0] == 'moedas') resposta.moedas = item[1]
+            else resposta.comprouSkin = item[1] == 1
+        })
+        if (resposta.comprouSkin) {
+            res.json(resposta)
         } else {
             res.status(400).json({ mensagem: 'sem moedas suficientes' })
         }

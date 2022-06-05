@@ -20,7 +20,10 @@ CONFIG_PROD = {
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
     ssl: true,
-    logging: false
+    logging: false,
+    dialectOptions: {
+        multipleStatements: true
+    }
 }
 
 module.exports = CONFIG_PROD//process.env.NODE_ENV == 'production' ? CONFIG_PROD : CONFIG_DEV 
