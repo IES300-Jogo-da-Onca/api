@@ -7,9 +7,9 @@ const { Server } = require("socket.io");
 const app = express()
 const router = require('./rotas.js')
 const db = require('./db.js')
-const { getNovaSala, removerSala, getSala, salvarSala, dist } = require('./utils.js')
+const { getNovaSala, removerSala, getSala, salvarSala, dist, getSalasDisponiveis, removerSalaDisponível } = require('./utils.js')
 const Jogo = require('./Jogo.js')
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const cookie = cookieParser(SECRET)
 const server = http.createServer(app)
 const store = new session.MemoryStore()
@@ -24,7 +24,7 @@ app.use(session({
 }))
 
 app.use((req, res, next) => {
-    const origin = req.headers.origin?.indexOf('localhost:3000') != -1 ? "http://localhost:3000" : process.env.HOST
+    const origin = req.headers.origin?.indexOf('localhost') != -1 ? req.headers.origin : process.env.HOST
     res.header("Access-Control-Allow-Origin", origin);
     res.header("Access-Control-Allow-Credentials", true)
     res.header("Access-Control-Allow-Headers", "Content-Type")
@@ -61,21 +61,29 @@ db.authenticate()
     .catch(console.error)
 
 io.on('connection', socket => {
+    console.log(`user ${socket.handshake.session.user.nome} conectou. socket id: ${socket.id}`)
     socket.on('novaSala', () => {
-        novaSala = getNovaSala(socket.id)
+        novaSala = getNovaSala(socket.id, socket.handshake.session.user.nome)
         salaAntiga = socket.handshake.session.sala
         if (salaAntiga) {
             removerSala(salaAntiga)
             socket.leave(salaAntiga)
             console.log(socket.handshake.session.user.nome + ' deixou a sala ' + salaAntiga)
         }
-        console.log(novaSala)
         socket.join(novaSala)
         console.log(socket.handshake.session.user.nome + ' entrou na sala ' + novaSala)
         socket.emit('serverNovaSala', { idSala: novaSala })
         socket.handshake.session.sala = novaSala
+        io.emit('serverSalasDisponiveis', getSalasDisponiveis())
     })
+    socket.on('disconnect', () => {
+        console.log(`user ${socket.handshake.session.user.nome} desconectou`)
+        if (socket.handshake.session.sala) {
+            removerSala(socket.handshake.session.sala)
+            io.emit('serverSalasDisponiveis', getSalasDisponiveis())
+        }
 
+    })
     socket.on('joinSala', (idSala) => {
         try {
             sala = getSala(idSala)
@@ -92,19 +100,22 @@ io.on('connection', socket => {
             }
             sala.jogadores++
             sala.cachorro = socket.id
-            salvarSala(sala)
             socket.join(idSala)
+            salvarSala(sala)
+            removerSalaDisponível(idSala)
+            io.emit('serverSalasDisponiveis', getSalasDisponiveis())
             socket.handshake.session.sala = idSala
-            console.log(socket.handshake.session.user.nome + ' entrou na sala ' + novaSala)
+            console.log(socket.handshake.session.user.nome + 'entrou na sala ' + novaSala)
 
             socket.emit('serverJoinSala', {
                 entrouNaSala: true, mensagem: 'OK'
             })
             sala.dadosPartida = {
                 vetorTabuleiro: Jogo.getTabuleiroInicial(),
-                cachorrosCapturados: 0,
+                placar: 0,
                 movimento: 0,
-                turnoPeca: 0 // 0 onca, 1 cachorro
+                turnoPeca: 0, // 0 onca, 1 cachorro
+
             }
             //TODO recuperar as skins
             dadosCachorro = { ehCachorro: true, ...sala.dadosPartida }
@@ -137,30 +148,27 @@ io.on('connection', socket => {
             return socket.emit('error', { mensagem: 'Movimento inválido', x, y, old_x, old_y })
         }
         novoTabuleiro = Jogo.getNovoTabuleiro(tabuleiro, x, y, old_x, old_y, ehCachorro)
+        sala.dadosPartida.vetorTabuleiro = novoTabuleiro
         sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
         sala.dadosPartida.movimento++
-
         let houveCaptura = !ehCachorro && dist(x, y, old_x, old_y) == 2
         sala.dadosPartida.houveCaptura = houveCaptura
         if (houveCaptura) {
-            sala.dadosPartida.cachorrosCapturados++
+            sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
                 .some(item => dist(x, y, item[0], item[1] == 2))
             if (oncaContinuaCaptura) {
-                console.log(Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true))
                 sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
+                sala.dadosPartida.movimento--
             }
             else {
                 houveCaptura = false
             }
         }
-        console.log(`turno: ${sala.dadosPartida.turnoPeca}\nplacar: ${sala.dadosPartida.cachorrosCapturados}
-                \n houveCaptura: ${houveCaptura}
-        `)
         io.in(socket.handshake.session.sala).emit('serverMoverPeca', {
             novoTabuleiro,
             turnoPeca: sala.dadosPartida.turnoPeca,
-            placar: sala.dadosPartida.cachorrosCapturados,
+            placar: sala.dadosPartida.placar,
             houveCaptura
 
         })

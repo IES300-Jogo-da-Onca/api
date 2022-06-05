@@ -29,7 +29,9 @@ const verificaLogin = async (req, res) => {
 
         })
         if (user.length != 0) {
-            req.session.user = user[0]
+            userSession = user[0]
+            delete userSession.imagemTabuleiro
+            req.session.user = userSession
             return res.status(200).json({ mensagem: 'usuário logado', data: user[0] })
         }
         res.status(401).json({ mensagem: 'credenciais inválidas', data: null })

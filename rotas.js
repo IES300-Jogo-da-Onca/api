@@ -5,6 +5,7 @@ const router = express.Router()
 const User = require('./models/User')
 const db = require('./db')
 const { QueryTypes } = require('sequelize')
+const { getSalasDisponiveis } = require('./utils.js')
 
 router.post('/login', rotaUsuarioNaoLogado, verificaLogin)
 
@@ -144,16 +145,8 @@ router.get('/logout', rotaUsuarioLogado, (req, res) => {
     })
 })
 
-router.get('/testeHoraDB', async (req, res) => {
-    try {
-        let queryString = db.getDialect() == "mysql" ? "select now()" : "select CURRENT_TIMESTAMP"
-        const [result] = await db.query(queryString)
-        res.json(result)
-    } catch (error) {
-        console.error(error)
-        res.status(500).json(error)
-    }
-
+router.get('/salasDisponiveis', async (req, res) => {
+    res.json(getSalasDisponiveis())
 })
 
 
