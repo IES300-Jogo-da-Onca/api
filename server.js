@@ -7,7 +7,8 @@ const { Server } = require("socket.io");
 const app = express()
 const router = require('./rotas.js')
 const db = require('./db.js')
-const { getNovaSala, removerSala, getSala, salvarSala, dist, getSalasDisponiveis, removerSalaDisponível } = require('./utils.js')
+const { getNovaSala, removerSala, getSala, salvarSala, dist, getSkinsPartida,
+    getSalasDisponiveis, removerSalaDisponível } = require('./utils.js')
 const Jogo = require('./Jogo.js')
 const cookieParser = require('cookie-parser');
 const cookie = cookieParser(SECRET)
@@ -63,7 +64,7 @@ db.authenticate()
 io.on('connection', socket => {
     console.log(`user ${socket.handshake.session.user.nome} conectou. socket id: ${socket.id}`)
     socket.on('novaSala', () => {
-        novaSala = getNovaSala(socket.id, socket.handshake.session.user.nome)
+        novaSala = getNovaSala(socket.id, socket.handshake.session.user)
         salaAntiga = socket.handshake.session.sala
         if (salaAntiga) {
             removerSala(salaAntiga)
@@ -84,7 +85,7 @@ io.on('connection', socket => {
         }
 
     })
-    socket.on('joinSala', (idSala) => {
+    socket.on('joinSala', async (idSala) => {
         try {
             sala = getSala(idSala)
             // TODO validar se o jogador está em alguma partida
@@ -114,15 +115,18 @@ io.on('connection', socket => {
                 vetorTabuleiro: Jogo.getTabuleiroInicial(),
                 placar: 0,
                 movimento: 0,
+                houveCaptura: false,
                 turnoPeca: 0, // 0 onca, 1 cachorro
 
             }
             //TODO recuperar as skins
-            dadosCachorro = { ehCachorro: true, ...sala.dadosPartida }
-            dadosOnca = { ehCachorro: false, ...sala.dadosPartida }
+            skins = await getSkinsPartida(sala.idJogadorOnca, socket.handshake.session.user.id)
+            dadosCachorro = { ehCachorro: true, ...sala.dadosPartida, ...skins }
+            dadosOnca = { ehCachorro: false, ...sala.dadosPartida, ...skins }
             socket.to(sala.onca).emit('serverIniciarJogo', dadosOnca)
             socket.emit('serverIniciarJogo', dadosCachorro)
             salvarSala(sala)
+            timer(idSala, sala.dadosPartida.movimento)
         } catch (error) {
             console.log(error)
         }
@@ -130,6 +134,7 @@ io.on('connection', socket => {
     })
 
     socket.on('moverPeca', data => {
+        timerParaJogada = true
         sala = getSala(socket.handshake.session.sala)
         if (!sala) {
             return socket.emit('error', { mensagem: 'sala não existe' })
@@ -152,7 +157,6 @@ io.on('connection', socket => {
         sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
         sala.dadosPartida.movimento++
         let houveCaptura = !ehCachorro && dist(x, y, old_x, old_y) == 2
-        sala.dadosPartida.houveCaptura = houveCaptura
         if (houveCaptura) {
             sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
@@ -160,19 +164,43 @@ io.on('connection', socket => {
             if (oncaContinuaCaptura) {
                 sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
                 sala.dadosPartida.movimento--
+                timerParaJogada = false
             }
             else {
                 houveCaptura = false
             }
         }
-        io.in(socket.handshake.session.sala).emit('serverMoverPeca', {
+        sala.dadosPartida.houveCaptura = houveCaptura
+        emitirMovimentoPeca(socket.handshake.session.sala, {
             novoTabuleiro,
             turnoPeca: sala.dadosPartida.turnoPeca,
             placar: sala.dadosPartida.placar,
             houveCaptura
-
         })
         salvarSala(sala)
+        if (timerParaJogada) {
+            timer(socket.handshake.session.sala, sala.dadosPartida.movimento)
+        }
     })
 
 })
+const emitirMovimentoPeca = (idSala, dadosPartida) => {
+    io.in(idSala).emit('serverMoverPeca', dadosPartida)
+}
+const timer = (idSala, movimento) => {
+    setTimeout(() => {
+        sala = getSala(idSala)
+        if (sala && sala.dadosPartida.movimento == movimento) {
+            sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
+            salvarSala(sala)
+            emitirMovimentoPeca(idSala, {
+                novoTabuleiro: sala.dadosPartida.vetorTabuleiro,
+                turnoPeca: sala.dadosPartida.turnoPeca,
+                placar: sala.dadosPartida.placar,
+                houveCaptura: sala.dadosPartida.houveCaptura
+            })
+            timer(idSala, sala.dadosPartida.movimento)
+        }
+    }, 10500);
+
+}

@@ -194,7 +194,8 @@ router.post('/equiparSkin', rotaUsuarioLogado, async (req, res) => {
             replacements: { id_usuario: req.session.user.id, idSkin },
             type: QueryTypes.SELECT,
         })
-        res.json(result)
+        userData = result[1]['0']
+        res.json(userData)
 
     } catch (error) {
         console.error(error)
