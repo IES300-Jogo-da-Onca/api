@@ -150,10 +150,58 @@ router.get('/logout', rotaUsuarioLogado, (req, res) => {
     })
 })
 
-router.get('/salasDisponiveis', async (req, res) => {
+router.get('/salasDisponiveis', rotaUsuarioLogado, (req, res) => {
     res.json(getSalasDisponiveis())
 })
 
+router.get('/skins', rotaUsuarioLogado, async (req, res) => {
+    const query = `
+        select s.id, s.nomeSkin, s.imagemSkin,
+        tipoPeca ehCachorro,
+        case when u.idSkinOncaEquipada = c.idSkin or u.idSkinCachorroEquipada = c.idSkin then 1
+        else 0 end equipada
+        from skin s join compra c on c.idSkin = s.id
+        join usuario u on u.idUsuario = :id_usuario
+        where c.idUsuario = :id_usuario
+   `
+    try {
+        result = await db.query(query, {
+            replacements: { id_usuario: req.session.user.id, },
+            type: QueryTypes.SELECT,
+        })
+        res.json(result)
+
+    } catch (error) {
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/equiparSkin', rotaUsuarioLogado, async (req, res) => {
+    const { idSkin, ehCachorro } = req.body
+    const coluna = ehCachorro ? 'idSkinCachorroEquipada' : 'idSkinOncaEquipada'
+    const query = `
+        update usuario set ${coluna} = :idSkin
+        where idUsuario = :id_usuario;
+
+        select nomeExibicao nome, ehPremium, moedas, onca.imagemSkin skinOnca, usuario.idUsuario id,
+        cachorro.imagemSkin skinCachorro
+        from usuario left join skin onca on onca.id = usuario.idSkinOncaEquipada
+        left join skin cachorro on cachorro.id = usuario.idSkinCachorroEquipada
+        where idUsuario = :id_usuario;
+    `
+    try {
+        result = await db.query(query, {
+            replacements: { id_usuario: req.session.user.id, idSkin },
+            type: QueryTypes.SELECT,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error })
+    }
+
+})
 
 
 router.get('*', (req, res) => res.status(404).end())
