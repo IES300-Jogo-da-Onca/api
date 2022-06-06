@@ -104,22 +104,21 @@ router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
             join season on season.id = venda.idSeason
             join skin on skin.id = venda.idSkin
             where now() between season.inicioVigencia and season.fimVigencia
-            and prioridade = (
-                select max(prioridade) from season where 
-                now() between season.inicioVigencia and season.fimVigencia
-            )
             and venda.idSkin = :id_skin
-            limit 1 ;
+            order by valor asc limit 1 ;
 
             start transaction;
                 insert into compra(idUsuario, idSkin)
                 select :id_usuario, :id_skin where @moedas >= @valor
                 and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
-                
+
+                select @comprouSkin:= row_count() = 1;
+
                 update usuario set moedas = moedas - @valor
                 where idUsuario = :id_usuario
                 and @moedas >= @valor;
-                select @moedas >= @valor and :id_skin in (select idSkin from compra where  idUsuario = :id_usuario),
+
+                select @comprouSkin,
                 moedas from usuario where idUsuario = :id_usuario;
             commit;
         `
@@ -127,15 +126,15 @@ router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
             replacements: { id_usuario: req.session.user.id, id_skin: idSkin },
             type: QueryTypes.SELECT,
         })
-        // console.log(Object.values(result[5]))
         let resposta = {}
-        Object.entries(result[5]['0']).forEach(item => {
+        Object.entries(result[6]['0']).forEach(item => {
             if (item[0] == 'moedas') resposta.moedas = item[1]
             else resposta.comprouSkin = item[1] == 1
         })
         if (resposta.comprouSkin) {
             res.json(resposta)
         } else {
+            console.log(result)
             res.status(400).json({ mensagem: 'sem moedas suficientes' })
         }
     }
