@@ -161,6 +161,7 @@ io.on('connection', socket => {
             sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
                 .some(item => dist(x, y, item[0], item[1] == 2))
+            console.log(`\n\n continua captura ${oncaContinuaCaptura}\n\n`)
             if (oncaContinuaCaptura) {
                 sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
                 sala.dadosPartida.movimento--
@@ -192,6 +193,7 @@ const timer = (idSala, movimento) => {
         sala = getSala(idSala)
         if (sala && sala.dadosPartida.movimento == movimento) {
             sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
+            sala.dadosPartida.houveCaptura = false
             salvarSala(sala)
             emitirMovimentoPeca(idSala, {
                 novoTabuleiro: sala.dadosPartida.vetorTabuleiro,
