@@ -7,6 +7,7 @@ const db = require('./db')
 const { QueryTypes } = require('sequelize')
 const { getSalasDisponiveis } = require('./utils.js')
 
+
 router.post('/login', rotaUsuarioNaoLogado, verificaLogin)
 
 router.post('/register', rotaUsuarioNaoLogado, async (req, res) => {
@@ -204,6 +205,36 @@ router.post('/equiparSkin', rotaUsuarioLogado, async (req, res) => {
 
 })
 
+router.post('/alterarDados', async (req, res) => {
+    let alterou = false
+    const { nome, senha, novaSenha } = req.body
+    try {
+        const user = await User.findByPk(req.session.user.id)
+        if (nome && user.nome !== nome) {
+            user.nome = nome
+            alterou = true
+        }
+        if (senha && novaSenha) {
+            const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex')
+            if (user.senha === senhaHash) {
+                user.senha = await crypto.createHash('sha256').update(novaSenha).digest('hex')
+                alterou = true
+            }
+            else {
+                return res.status(401).json({ mensagem: 'senha inválida' })
+            }
+        }
+        if (alterou) {
+            await user.save()
+            return res.json({ mensagem: 'Dados alterados com sucesso', data: { nome } })
+        }
+        return res.json({ mensagem: "Sem alterações", data: {} })
+    }
+    catch (e) {
+        console.error(e)
+        res.status(500).json({ e })
+    }
+})
 
 router.get('*', (req, res) => res.status(404).end())
 module.exports = router
