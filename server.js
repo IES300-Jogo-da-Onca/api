@@ -120,9 +120,10 @@ io.on('connection', socket => {
             })
             sala.dadosPartida = {
                 vetorTabuleiro: Jogo.getTabuleiroInicial(),
-                placar: 0,
+                placar: 4,
                 movimento: 0,
                 houveCaptura: false,
+                posicaoOnca: [2, 2],
                 turnoPeca: 0, // 0 onca, 1 cachorro
 
             }
@@ -165,10 +166,9 @@ io.on('connection', socket => {
         sala.dadosPartida.movimento++
         let houveCaptura = !ehCachorro && dist(x, y, old_x, old_y) > 1
         if (!ehCachorro) {
-            console.log(`capturou: ${houveCaptura}
-             movendo de : ${old_x}, ${old_y} para x,y: ${x},${y} com distancia ${dist(x, y, old_x, old_y)}
-            `)
+            sala.dadosPartida.posicaoOnca = [x, y]
         }
+
         if (houveCaptura) {
             sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
@@ -191,6 +191,17 @@ io.on('connection', socket => {
             houveCaptura
         })
         salvarSala(sala)
+        if (sala.dadosPartida.placar == 5) {
+            emitirFimDeJogo(sala, true)
+            removerSala(sala.id)
+            return
+        }
+        else if (ehCachorro) {
+            const { posicaoOnca } = sala.dadosPartida
+            if (Jogo.getPossiveisMovimentos(posicaoOnca[0], posicaoOnca[1], false, novoTabuleiro, false).length == 0) {
+                emitirFimDeJogo(sala, false)
+            }
+        }
         if (timerParaJogada) {
             timer(socket.handshake.session.sala, sala.dadosPartida.movimento)
         }
@@ -199,6 +210,11 @@ io.on('connection', socket => {
 })
 const emitirMovimentoPeca = (idSala, dadosPartida) => {
     io.in(idSala).emit('serverMoverPeca', dadosPartida)
+}
+
+const emitirFimDeJogo = (sala, oncaVenceu) => {
+    pecaVencedora = oncaVenceu ? 0 : 1
+    io.in(sala.id).emit('serverFimDeJogo', { pecaVencedora })
 }
 const timer = (idSala, movimento) => {
     setTimeout(() => {
