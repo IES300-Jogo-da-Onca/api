@@ -6,17 +6,25 @@ cache = new LRU({ ttl: TTL_SALA, max: 1000 })
 
 const randomString = () => Math.random().toString(36).replace(/[^a-z1-9]+/g, '')
 
-const getNovaSala = (socketId, user, pecaSelecionada = 0) => {
+const getNovaSala = (socketId, user, pecaSelecionada) => {
     const { nome, id } = user
     try {
         let idSala = randomString()
         while (cache.get(idSala)) {
             idSala = randomString()
         }
-        cache.set(idSala, JSON.stringify({
-            onca: socketId,
-            jogadores: 1, id: idSala, pecaSelecionada, socketId, nome, idJogadorOnca: id  // pecao: 1 cachorro, 0 onça
-        }, TTL_SALA))
+        let sala = {
+            jogadores: 1, id: idSala, socketId, nome
+        }
+        if (pecaSelecionada === 1) {
+            sala.cachorro = socketId
+            sala.idJogadorCachorro = id
+        }
+        else {
+            sala.onca = socketId
+            sala.idJogadorOnca = id
+        }
+        cache.set(idSala, JSON.stringify(sala), { ttl: TTL_SALA })
         inserirSalaDisponivel({ id_sala: idSala, peca_disponivel: +!pecaSelecionada, user: nome, id_user: id })
         return idSala
     } catch (e) {

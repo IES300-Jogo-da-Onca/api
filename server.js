@@ -63,8 +63,8 @@ db.authenticate()
 
 io.on('connection', socket => {
     console.log(`user ${socket.handshake.session.user.nome} conectou. socket id: ${socket.id}`)
-    socket.on('novaSala', () => {
-        novaSala = getNovaSala(socket.id, socket.handshake.session.user)
+    socket.on('novaSala', pecaSelecionada => {
+        novaSala = getNovaSala(socket.id, socket.handshake.session.user, pecaSelecionada)
         salaAntiga = socket.handshake.session.sala
         if (salaAntiga) {
             removerSala(salaAntiga)
@@ -100,7 +100,14 @@ io.on('connection', socket => {
                 })
             }
             sala.jogadores++
-            sala.cachorro = socket.id
+            if (sala.onca === undefined) {
+                sala.onca = socket.id
+                sala.idJogadorOnca = socket.handshake.session.user.id
+            }
+            else {
+                sala.cachorro = socket.id
+                sala.idJogadorCachorro = socket.handshake.session.user.id
+            }
             socket.join(idSala)
             salvarSala(sala)
             removerSalaDisponível(idSala)
@@ -120,11 +127,11 @@ io.on('connection', socket => {
 
             }
             //TODO recuperar as skins
-            skins = await getSkinsPartida(sala.idJogadorOnca, socket.handshake.session.user.id)
+            skins = await getSkinsPartida(sala.idJogadorOnca, sala.idJogadorCachorro)
             dadosCachorro = { ehCachorro: true, ...sala.dadosPartida, ...skins }
             dadosOnca = { ehCachorro: false, ...sala.dadosPartida, ...skins }
-            socket.to(sala.onca).emit('serverIniciarJogo', dadosOnca)
-            socket.emit('serverIniciarJogo', dadosCachorro)
+            io.to(sala.onca).emit('serverIniciarJogo', dadosOnca)
+            io.to(sala.cachorro).emit('serverIniciarJogo', dadosCachorro)
             salvarSala(sala)
             timer(idSala, sala.dadosPartida.movimento)
         } catch (error) {
