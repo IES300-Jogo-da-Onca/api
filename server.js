@@ -156,7 +156,12 @@ io.on('connection', socket => {
         sala.dadosPartida.vetorTabuleiro = novoTabuleiro
         sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
         sala.dadosPartida.movimento++
-        let houveCaptura = !ehCachorro && dist(x, y, old_x, old_y) == 2
+        let houveCaptura = !ehCachorro && dist(x, y, old_x, old_y) > 1
+        if (!ehCachorro) {
+            console.log(`capturou: ${houveCaptura}
+             movendo de : ${old_x}, ${old_y} para x,y: ${x},${y} com distancia ${dist(x, y, old_x, old_y)}
+            `)
+        }
         if (houveCaptura) {
             sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)

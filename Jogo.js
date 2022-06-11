@@ -30,17 +30,22 @@ class Jogo {
         '[3,6]': ['[3,5]', '[2,6]'],
     }
 
+    static CAPTURA_DIAGONAL_TRIANGULO = {
+        '[2:4]': [[1, 6], [3, 6]],
+        '[1,6]': [[2, 4]],
+        '[3,6]': [[2, 4]]
+    }
+
     static getTabuleiroInicial() {
         return [
             ['C', 'C', 'C', 'C', 'C'],
             ['C', 'C', 'C', 'C', 'C'],
-            ['C', 'C', 'C', 'C', 'C'],
-            ['.', 'C', '.', 'C', 'O'],
+            ['C', 'C', 'O', 'C', 'C'],
+            ['.', '.', '.', '.', '.'],
             ['.', '.', '.', '.', '.'],
             ['|', '.', '.', '.', '|'],
             ['|', '.', '.', '.', '|'],
         ]
-
     }
     /**
      *  verifica se a posição está dentro do vetor
@@ -68,6 +73,13 @@ class Jogo {
         // verifica se na nova posição a onça captura o cachorro
         let novoX = x + direcao[0] * 2
         let novoY = y + direcao[1] * 2
+        let key = JSON.stringify([x, y])
+        if (y >= 4 && Object.keys(this.CAPTURA_DIAGONAL_TRIANGULO).includes(key)) {
+            let value = JSON.stringify([novoX, novoY])
+            let posValida = Object.values(key).includes(value)
+            return posValida && vetorTabuleiro[posValida[1]][posValida[0]] == '.'
+
+        }
         return (vetorTabuleiro[y + direcao[1]][x + direcao[0]] == 'C' && this.posDentroDoTabuleiro(novoX, novoY) && vetorTabuleiro[novoY][novoX] == '.')
     }
 
@@ -106,6 +118,17 @@ class Jogo {
                 }
             })
         }
+        // captura na diagonal do triangulo
+        if (x == 1 && y == 6 && vetorTabuleiro[5][1] == 'C' && vetorTabuleiro[4][2] == ".") {
+            movimentos.push([2, 4])
+        }
+        else if (x == 3 && y == 6 && vetorTabuleiro[5][3] == 'C' && vetorTabuleiro[4][2] == ".") {
+            movimentos.push([2, 4])
+        }
+        else if (x == 2 && y == 4) {
+            if (vetorTabuleiro[5][3] == 'C' && vetorTabuleiro[6][3] == ".") movimentos.push([3, 6])
+            if (vetorTabuleiro[5][3] == 'C' && vetorTabuleiro[6][1] == ".") movimentos.push([1, 6])
+        }
         return movimentos
     }
     /*
@@ -128,7 +151,19 @@ class Jogo {
 
         if (dist(old_x, old_y, x, y) === 1) return vetorTabuleiro
         let direcao = [Math.floor((y - old_y) / 2), Math.floor((x - old_x) / 2)]
-        vetorTabuleiro[old_y + direcao[0]][old_x + direcao[1]] = '.'
+
+        // remover cachorro após captura diagonal no triangulo
+        let key = JSON.stringify([old_x, old_y])
+        if (Object.keys(this.CAPTURA_DIAGONAL_TRIANGULO).includes(key)) {
+            if (old_x == 1 && old_y == 6 && x == 2 && y == 4) vetorTabuleiro[5][1] = '.'
+            else if (old_x == 3 && old_y == 6 && x == 2 && y == 4) vetorTabuleiro[5][3] = '.'
+            else if (old_x == 2 && old_y == 4 && x == 1 && y == 6) vetorTabuleiro[5][1] = '.'
+            else if (old_x == 2 && old_y == 4 && x == 3 && y == 6) vetorTabuleiro[5][3] = '.'
+        }
+        else {
+            vetorTabuleiro[old_y + direcao[0]][old_x + direcao[1]] = '.'
+        }
+
         return vetorTabuleiro
     }
 

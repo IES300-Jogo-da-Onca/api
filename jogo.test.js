@@ -1,4 +1,5 @@
 const Jogo = require('./Jogo')
+const { describe } = require('./models/User')
 
 test('posicao no tabuleiro OK', () => {
     expect(Jogo.posDentroDoTabuleiro(-1, 0)).toBe(false)
@@ -36,7 +37,6 @@ test('onca captura cachorro linha reta', () => {
     tabuleiro = Jogo.getTabuleiroInicial()
     tabuleiro[0][2] = '.'
     const result = Jogo.getPossiveisMovimentos(2, 2, false, tabuleiro)
-    console.log('Movimentos da onça: ', result)
     expect(result.some(item => item[0] == 2 && item[1] == 0)).toBe(true)
 })
 
@@ -44,7 +44,6 @@ test('onca pode captura cachorro na diagonal', () => {
     tabuleiro = Jogo.getTabuleiroInicial()
     tabuleiro[0][0] = '.'
     const result = Jogo.getPossiveisMovimentos(2, 2, false, tabuleiro)
-    console.log('Movimentos da onça: ', result)
     expect(result.some(item => item[0] == 0 && item[1] == 0)).toBe(true)
 })
 test('onca pode capturar cachorro no triangulo linha reta', () => {
@@ -56,6 +55,56 @@ test('onca pode capturar cachorro no triangulo linha reta', () => {
     expect(result.some(item => item[0] == 2 && item[1] == 4)).toBe(true)
 
 
+})
+
+describe('possiveis movimentos na captura diagonal do triangulo', () => {
+    let tabuleiro
+    beforeEach(() => {
+        tabuleiro = Jogo.getTabuleiroInicial()
+        tabuleiro[2][2] = '.'
+    })
+
+    test('teste onca (3,6) cachorro (3,5)', () => {
+        tabuleiro[6][3] = 'O'
+        tabuleiro[5][3] = 'C'
+        let result = Jogo.getPossiveisMovimentos(3, 6, false, tabuleiro)
+        expect(result.sort()).toEqual([
+            [2, 4], [2, 6]
+        ].sort())
+    })
+
+    test('teste onca (1,6) cachorro (1,5)', () => {
+        tabuleiro[6][1] = 'O'
+        tabuleiro[5][1] = 'C'
+        result = Jogo.getPossiveisMovimentos(1, 6, false, tabuleiro)
+        expect(result.sort()).toEqual([
+            [2, 4], [2, 6]
+        ].sort())
+    })
+
+    test('teste onca (2,4) cachorro (2,5) e (1,5)', () => {
+        tabuleiro[4][2] = 'O'
+        tabuleiro[5][1] = 'C'
+        tabuleiro[5][3] = 'C'
+        result = Jogo.getPossiveisMovimentos(2, 4, false, tabuleiro)
+        console.log(result)
+        expect(result.sort()).toEqual([
+            [1, 6], [1, 4], [1, 3], [2, 3], [2, 5], [3, 4], [3, 3], [3, 6]
+        ].sort())
+    })
+})
+
+test('captura invalida na diagonal do triangulo', () => {
+    tabuleiro = Jogo.getTabuleiroInicial()
+    tabuleiro[2][2] = '.'
+    tabuleiro[6][1] = 'O'
+    tabuleiro[5][1] = 'C'
+    const result = Jogo.getPossiveisMovimentos(2, 4, false, tabuleiro)
+    expect(result.some(item => item[0] == 1 && item[1] == 4)).toBe(false)
+    tabuleiro = Jogo.getTabuleiroInicial()
+    tabuleiro[2][2] = '.'
+    tabuleiro[6][1] = 'O'
+    tabuleiro[5][1] = 'C'
 })
 test('tabuleiro após captura', () => {
     tabuleiro = Jogo.getTabuleiroInicial()
@@ -73,6 +122,28 @@ test('tabuleiro após captura', () => {
         })
     })
 })
+describe('tabuleiro após captura na diagonal do triangulo', () => {
+    let tabuleiro
+    beforeEach(() => {
+        tabuleiro = Jogo.getTabuleiroInicial()
+        tabuleiro[2][2] = '.'
+    })
+
+    test('captura (2,4) -> (1,6)', () => {
+        tabuleiro[1][5] = 'C'
+        novoTabuleiro = Jogo.getNovoTabuleiro(tabuleiro, 2, 4, 1, 6, false)
+        expect(novoTabuleiro[5][1]).toEqual('.')
+        expect(novoTabuleiro[6][1]).toEqual('O')
+    })
+
+    test('captura (2,4) -> (3,6)', () => {
+        tabuleiro[1][5] = 'C'
+        novoTabuleiro = Jogo.getNovoTabuleiro(tabuleiro, 2, 4, 3, 6, false)
+        expect(novoTabuleiro[5][3]).toEqual('.')
+        expect(novoTabuleiro[6][3]).toEqual('O')
+    })
+})
+
 test('cachorro não pode mover onça', () => {
     tabuleiro = Jogo.getTabuleiroInicial()
     expect(Jogo.ehMovimentoValido(2, 3, 2, 2, tabuleiro, true)).toBe(false)
