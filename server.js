@@ -80,6 +80,12 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log(`user ${socket.handshake.session.user.nome} desconectou`)
         if (socket.handshake.session.sala) {
+            sala = getSala(socket.handshake.session.sala)
+            if (sala && sala.jogadores == 2) {
+                socket.leave(sala.id)
+                oncaVenceu = socket.id == sala.cachorro
+                emitirFimDeJogo(sala, oncaVenceu)
+            }
             removerSala(socket.handshake.session.sala)
             io.emit('serverSalasDisponiveis', getSalasDisponiveis())
         }
