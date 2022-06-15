@@ -179,6 +179,8 @@ io.on('connection', socket => {
             sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
                 .some(item => dist(x, y, item[0], item[1] == 2))
+            /*             let chewSound = new Audio('/assets/panther-chew.mp3')//efeito sonoro captura
+                        chewSound.play() */
             console.log(`\n\n continua captura ${oncaContinuaCaptura}\n\n`)
             if (oncaContinuaCaptura) {
                 sala.dadosPartida.turnoPeca = +!sala.dadosPartida.turnoPeca
