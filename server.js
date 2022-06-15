@@ -126,7 +126,7 @@ io.on('connection', socket => {
             })
             sala.dadosPartida = {
                 vetorTabuleiro: Jogo.getTabuleiroInicial(),
-                placar: 4,
+                placar: 0,
                 movimento: 0,
                 houveCaptura: false,
                 posicaoOnca: [2, 2],
