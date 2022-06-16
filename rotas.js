@@ -6,6 +6,7 @@ const User = require('./models/User')
 const db = require('./db')
 const { QueryTypes } = require('sequelize')
 const { getSalasDisponiveis } = require('./utils.js')
+const { receiveMessageOnPort } = require('worker_threads')
 
 
 router.post('/login', rotaUsuarioNaoLogado, verificaLogin)
@@ -213,6 +214,7 @@ router.post('/alterarDados', async (req, res) => {
         if (nome && user.nome !== nome) {
             user.nome = nome
             alterou = true
+            req.session.user.nome = nome
         }
         if (senha && novaSenha) {
             const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex')
