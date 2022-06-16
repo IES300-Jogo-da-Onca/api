@@ -34,7 +34,7 @@ const verificaLogin = async (req, res) => {
             req.session.user = userSession
             return res.status(200).json({ mensagem: 'usuário logado', data: user[0] })
         }
-        res.status(401).json({ mensagem: 'credenciais inválidas', data: null })
+        res.status(402).json({ mensagem: 'credenciais inválidas', data: null })
 
     } catch (error) {
         console.error(error)
