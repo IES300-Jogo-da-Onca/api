@@ -11,7 +11,7 @@ const verificaLogin = async (req, res) => {
         const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex')
 
         const queryString = `
-           select nomeExibicao nome, ehPremium, moedas, onca.imagemSkin skinOnca, usuario.idUsuario id,
+           select nomeExibicao nome, ehPremium, moedas, ehSuperUser, onca.imagemSkin skinOnca, usuario.idUsuario id,
            cachorro.imagemSkin skinCachorro, imagemTabuleiro, tabuleiro.corTematica
            from
                season inner join tabuleiro on season.idTabuleiro = tabuleiro.id
@@ -61,4 +61,14 @@ const rotaUsuarioNaoLogado = (req, res, next) => {
     return res.status(400).json({ mensagem: 'acessivel apenas para usuario não logado', data: null })
 }
 
-module.exports = { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado }
+/**
+ * rota acessivel apenas para super usuario
+ */
+const rotaSuperUsuarioLogado = (req, res, next) => {
+    if (req.session && req.session.user && req.session.user.ehSuperUser) {
+        return next()
+    }
+    return res.status(402).json({ mensagem: 'superusuário não logado', data: null })
+}
+
+module.exports = { verificaLogin, rotaUsuarioLogado, rotaSuperUsuarioLogado, rotaUsuarioNaoLogado }

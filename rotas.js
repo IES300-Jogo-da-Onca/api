@@ -1,6 +1,6 @@
 const express = require('express')
 const crypto = require('crypto')
-const { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado } = require('./auth.js')
+const { verificaLogin, rotaUsuarioLogado, rotaUsuarioNaoLogado, rotaSuperUsuarioLogado } = require('./auth.js')
 const router = express.Router()
 const User = require('./models/User')
 const db = require('./db')
@@ -236,7 +236,7 @@ router.post('/alterarDados', async (req, res) => {
     }
 })
 
-router.get('/autoIncrementSkin', rotaUsuarioLogado, async (req, res) => {
+router.get('/autoIncrementSkin', rotaSuperUsuarioLogado, async (req, res) => {
     const query = `
         SELECT auto_increment 
         FROM information_schema.TABLES 
@@ -253,7 +253,7 @@ router.get('/autoIncrementSkin', rotaUsuarioLogado, async (req, res) => {
     }
 })
 
-router.get('/autoIncrementTabuleiro', rotaUsuarioLogado, async (req, res) => {
+router.get('/autoIncrementTabuleiro', rotaSuperUsuarioLogado, async (req, res) => {
     const query = `
         SELECT auto_increment 
         FROM information_schema.TABLES 
@@ -270,7 +270,7 @@ router.get('/autoIncrementTabuleiro', rotaUsuarioLogado, async (req, res) => {
     }
 })
 
-router.get('/autoIncrementSeason', rotaUsuarioLogado, async (req, res) => {
+router.get('/autoIncrementSeason', rotaSuperUsuarioLogado, async (req, res) => {
     const query = `
         SELECT auto_increment 
         FROM information_schema.TABLES 
@@ -287,7 +287,7 @@ router.get('/autoIncrementSeason', rotaUsuarioLogado, async (req, res) => {
     }
 })
 
-router.get('/autoIncrementVenda', rotaUsuarioLogado, async (req, res) => {
+router.get('/autoIncrementVenda', rotaSuperUsuarioLogado, async (req, res) => {
     const query = `
         SELECT auto_increment 
         FROM information_schema.TABLES 
@@ -304,7 +304,7 @@ router.get('/autoIncrementVenda', rotaUsuarioLogado, async (req, res) => {
     }
 })
 
-router.get('/consultarSkins', rotaUsuarioLogado, async (req,res) => {
+router.get('/consultarSkins', rotaSuperUsuarioLogado, async (req,res) => {
     const query = `
         SELECT * 
         FROM skin
@@ -320,7 +320,7 @@ router.get('/consultarSkins', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.get('/consultarTabuleiros', rotaUsuarioLogado, async (req,res) => {
+router.get('/consultarTabuleiros', rotaSuperUsuarioLogado, async (req,res) => {
     const query = `
         SELECT * 
         FROM tabuleiro
@@ -336,7 +336,7 @@ router.get('/consultarTabuleiros', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.get('/consultarSeasons', rotaUsuarioLogado, async (req,res) => {
+router.get('/consultarSeasons', rotaSuperUsuarioLogado, async (req,res) => {
     const query = `
         SELECT * 
         FROM season
@@ -352,7 +352,7 @@ router.get('/consultarSeasons', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.get('/consultarVendas', rotaUsuarioLogado, async (req,res) => {
+router.get('/consultarVendas', rotaSuperUsuarioLogado, async (req,res) => {
     const query = `
         SELECT * 
         FROM venda
@@ -368,7 +368,7 @@ router.get('/consultarVendas', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.post('/alterarSkin', rotaUsuarioLogado, async(req,res) => {
+router.post('/alterarSkin', rotaSuperUsuarioLogado, async(req,res) => {
     const { id,nome,imagem,tipoPeca,corTematica } = req.body
 
     const query = `
@@ -391,7 +391,7 @@ router.post('/alterarSkin', rotaUsuarioLogado, async(req,res) => {
     }
 })
 
-router.post('/alterarTabuleiro', rotaUsuarioLogado, async(req,res) => {
+router.post('/alterarTabuleiro', rotaSuperUsuarioLogado, async(req,res) => {
     const { id,nome,imagem,corTematica } = req.body
 
     const query = `
@@ -414,7 +414,7 @@ router.post('/alterarTabuleiro', rotaUsuarioLogado, async(req,res) => {
     }
 })
 
-router.post('/alterarSeason', rotaUsuarioLogado, async(req,res) => {
+router.post('/alterarSeason', rotaSuperUsuarioLogado, async(req,res) => {
     const { id,nome,inicioVigencia,fimVigencia,idTabuleiro,prioridade } = req.body
 
     const query = `
@@ -439,7 +439,7 @@ router.post('/alterarSeason', rotaUsuarioLogado, async(req,res) => {
     }
 })
 
-router.post('/alterarVenda', rotaUsuarioLogado, async(req,res) => {
+router.post('/alterarVenda', rotaSuperUsuarioLogado, async(req,res) => {
     const { id,valor,idSeason,idSkin } = req.body
 
     const query = `
@@ -461,7 +461,7 @@ router.post('/alterarVenda', rotaUsuarioLogado, async(req,res) => {
     }
 })
 
-router.post('/consultarSkin', rotaUsuarioLogado, async (req,res) => {
+router.post('/consultarSkin', rotaSuperUsuarioLogado, async (req,res) => {
     const { id } = req.body
     const query = `
         SELECT * 
@@ -480,7 +480,7 @@ router.post('/consultarSkin', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.post('/consultarTabuleiro', rotaUsuarioLogado, async (req,res) => {
+router.post('/consultarTabuleiro', rotaSuperUsuarioLogado, async (req,res) => {
     const { id } = req.body
     const query = `
         SELECT * 
@@ -499,7 +499,7 @@ router.post('/consultarTabuleiro', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.post('/consultarSeason', rotaUsuarioLogado, async (req,res) => {
+router.post('/consultarSeason', rotaSuperUsuarioLogado, async (req,res) => {
     const { id } = req.body
     const query = `
         SELECT * 
@@ -518,7 +518,7 @@ router.post('/consultarSeason', rotaUsuarioLogado, async (req,res) => {
     }
 })
 
-router.post('/consultarVenda', rotaUsuarioLogado, async (req,res) => {
+router.post('/consultarVenda', rotaSuperUsuarioLogado, async (req,res) => {
     const { id } = req.body
     const query = `
         SELECT * 
@@ -531,6 +531,263 @@ router.post('/consultarVenda', rotaUsuarioLogado, async (req,res) => {
             type: QueryTypes.SELECT,
         })
         res.json(result)
+
+    } catch (error) {
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/inserirSkin', rotaSuperUsuarioLogado, async(req,res) => {
+    const { nome,imagem,tipoPeca,corTematica } = req.body
+
+    const query = `
+        insert into skin (nomeSkin,imagemSkin,tipoPeca,corTematica)
+        values(:nomeSkin,:imagemSkin,:tipoPeca,:corTematica) 
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { nomeSkin: nome, imagemSkin: imagem, tipoPeca: tipoPeca, corTematica: corTematica },
+            type: QueryTypes.INSERT,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/inserirTabuleiro', rotaSuperUsuarioLogado, async(req,res) => {
+    const { nome,imagem,corTematica } = req.body
+
+    const query = `
+        insert into tabuleiro (nomeTabuleiro,imagemTabuleiro,corTematica)
+        values(:nomeTabuleiro,:imagemTabuleiro,:corTematica) 
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { nomeTabuleiro: nome, imagemTabuleiro: imagem, corTematica: corTematica },
+            type: QueryTypes.INSERT,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/inserirSeason', rotaSuperUsuarioLogado, async(req,res) => {
+    const { nome,inicioVigencia,fimVigencia,idTabuleiro,prioridade } = req.body
+
+    const query = `
+        insert into season (nomeSeason,inicioVigencia,fimVigencia,idTabuleiro,prioridade)
+        values(:nome,:inicioVigencia,:fimVigencia,:idTabuleiro,:prioridade) 
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { nome: nome, inicioVigencia: inicioVigencia, fimVigencia: fimVigencia,
+                idTabuleiro: idTabuleiro, prioridade: prioridade },
+            type: QueryTypes.INSERT,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/inserirVenda', rotaSuperUsuarioLogado, async(req,res) => {
+    const { valor,idSeason,idSkin } = req.body
+
+    const query = `
+        insert into venda (valor,idSeason,idSkin)
+        values(:valor,:idSeason,:idSkin) 
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { valor: valor, idSeason: idSeason, idSkin: idSkin },
+            type: QueryTypes.INSERT,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/removerSkin', rotaSuperUsuarioLogado, async(req,res) => {
+    const { id } = req.body
+
+    const query = `
+        delete from skin
+        where id = :id
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { id: id },
+            type: QueryTypes.DELETE,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/removerTabuleiro', rotaSuperUsuarioLogado, async(req,res) => {
+    const { id } = req.body
+
+    const query = `
+        delete from tabuleiro
+        where id = :id
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { id: id },
+            type: QueryTypes.DELETE,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/removerSeason', rotaSuperUsuarioLogado, async(req,res) => {
+    const { id } = req.body
+
+    const query = `
+        delete from season
+        where id = :id
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { id: id },
+            type: QueryTypes.DELETE,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/removerVenda', rotaSuperUsuarioLogado, async(req,res) => {
+    const { id } = req.body
+
+    const query = `
+        delete from venda
+        where id = :id
+    `
+
+    try {
+        result = await db.query(query, {
+            replacements: { id: id },
+            type: QueryTypes.DELETE,
+        })
+        res.json(result)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/isRemovivelSkin', rotaSuperUsuarioLogado, async (req,res) => {
+    const { id } = req.body
+
+    const query = `
+        SELECT * 
+        FROM venda
+        where idSkin = :id
+   `
+
+    try {
+        result = await db.query(query, {
+            replacements : {id: id},
+            type: QueryTypes.SELECT,
+        })
+
+        res.json(result[0]==undefined)
+
+    } catch (error) {
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/isRemovivelTabuleiro', rotaSuperUsuarioLogado, async (req,res) => {
+    const { id } = req.body
+
+    const query = `
+        SELECT * 
+        FROM season
+        where idTabuleiro = :id
+   `
+
+    try {
+        result = await db.query(query, {
+            replacements : {id: id},
+            type: QueryTypes.SELECT,
+        })
+        
+        res.json(result[0]==undefined)
+
+    } catch (error) {
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/isRemovivelSeason', rotaSuperUsuarioLogado, async (req,res) => {
+    const { id } = req.body
+
+    const query = `
+        SELECT * 
+        FROM venda
+        where idSeason = :id
+   `
+
+    try {
+        result = await db.query(query, {
+            replacements : {id: id},
+            type: QueryTypes.SELECT,
+        })
+        
+        res.json(result[0]==undefined)
+
+    } catch (error) {
+        res.status(500).json({ error })
+    }
+})
+
+router.post('/isPeriodoDisponivelSeason', rotaSuperUsuarioLogado, async (req,res) => {
+    const { id,inicio,fim,prioridade } = req.body
+
+    const query = `
+        select * from season 
+        where (:inicioVigencia between inicioVigencia and fimVigencia or :fimVigencia between inicioVigencia and fimVigencia) 
+        and prioridade >= :prioridade and id != :id
+   `
+
+    try {
+        result = await db.query(query, {
+            replacements : {inicioVigencia: inicio, fimVigencia: fim, prioridade: prioridade, id: id},
+            type: QueryTypes.SELECT,
+        })
+        console.log(result)
+        res.json(result[0]==undefined)
 
     } catch (error) {
         res.status(500).json({ error })
