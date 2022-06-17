@@ -30,7 +30,6 @@ const verificaLogin = async (req, res) => {
         })
         if (user.length != 0) {
             userSession = user[0]
-            delete userSession.imagemTabuleiro
             req.session.user = userSession
             return res.status(200).json({ mensagem: 'usuário logado', data: user[0] })
         }

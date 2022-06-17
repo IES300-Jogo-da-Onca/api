@@ -81,7 +81,7 @@ const getSkinsPartida = async (idJogadorOnca, idJogadorCachorro) => {
     const query = `
         select onca.imagemSkin skinOnca, onca.corTematica corPecaOnca,
         cachorro.imagemSkin skinCachorro, cachorro.corTematica corPecaCachorro,
-        tabuleiro.imagemTabuleiro skinTabuleiro
+        tabuleiro.imagemTabuleiro skinTabuleiro, tabuleiro.corTematica
         from usuario jogadorOnca
         cross join usuario jogadorCachorro 
         cross join tabuleiro
