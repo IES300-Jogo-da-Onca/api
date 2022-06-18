@@ -185,7 +185,7 @@ router.post('/equiparSkin', rotaUsuarioLogado, async (req, res) => {
         update usuario set ${coluna} = :idSkin
         where idUsuario = :id_usuario;
 
-        select nomeExibicao nome, ehPremium, moedas, onca.imagemSkin skinOnca, usuario.idUsuario id,
+        select nomeExibicao nome, ehPremium, ehSuperUser, moedas, onca.imagemSkin skinOnca, usuario.idUsuario id,
         cachorro.imagemSkin skinCachorro
         from usuario left join skin onca on onca.id = usuario.idSkinOncaEquipada
         left join skin cachorro on cachorro.id = usuario.idSkinCachorroEquipada
