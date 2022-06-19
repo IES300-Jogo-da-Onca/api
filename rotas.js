@@ -37,12 +37,18 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
     else current_time = 'now()'
     try {
         const queryString = `
-            select venda.idSkin idSkin, valor, imagemSkin, nomeSkin, tipoPeca from venda
-            join season on season.id = venda.idSeason
-            join skin on skin.id = venda.idSkin
-            where now() BETWEEN inicioVigencia and fimVigencia
-            and skin.id not in (select idSkin from compra where idUsuario = :id);
-        `
+        select venda.idSkin idSkin, valor, imagemSkin, nomeSkin, tipoPeca, idSeason from venda
+        join season on season.id = venda.idSeason
+        join skin on skin.id = venda.idSkin
+        where now() BETWEEN inicioVigencia and fimVigencia
+        and skin.id not in (select idSkin from compra where idUsuario = 2)
+        and valor = (select min(valor) from venda 
+          join season on season.id = venda.idSeason
+          join skin skin2 on skin.id = venda.idSkin
+          where now() BETWEEN inicioVigencia and fimVigencia
+          and skin2.id = skin.id
+        );
+`
 
         const [results] = await db.query(queryString, {
             replacements: {
@@ -443,7 +449,9 @@ router.post('/alterarSeason', rotaSuperUsuarioLogado, async(req,res) => {
 
 router.post('/alterarVenda', rotaSuperUsuarioLogado, async(req,res) => {
     const { id,valor,idSeason,idSkin } = req.body
-
+    if(!parseInt(valor) || valor < 1){
+        return res.status(500).json({mensagem: "valor inválido"})
+    }
     const query = `
         update venda SET 
         valor = :valor, idSeason = :idSeason, idSkin = :idSkin
@@ -605,7 +613,9 @@ router.post('/inserirSeason', rotaSuperUsuarioLogado, async(req,res) => {
 
 router.post('/inserirVenda', rotaSuperUsuarioLogado, async(req,res) => {
     const { valor,idSeason,idSkin } = req.body
-
+    if(!parseInt(valor) || valor < 1){
+        return res.status(500).json({mensagem: "valor inválido"})
+    }
     const query = `
         insert into venda (valor,idSeason,idSkin)
         values(:valor,:idSeason,:idSkin) 
