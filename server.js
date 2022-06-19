@@ -123,10 +123,12 @@ io.on('connection', socket => {
             if (sala.onca === undefined) {
                 sala.onca = socket.id
                 sala.idJogadorOnca = socket.handshake.session.user.id
+                sala.nomeJogadorOnca = socket.handshake.session.user.nome
             }
             else {
                 sala.cachorro = socket.id
                 sala.idJogadorCachorro = socket.handshake.session.user.id
+                sala.nomeJogadorCachorro = socket.handshake.session.user.nome
             }
             socket.join(idSala)
             salvarSala(sala)
@@ -236,7 +238,8 @@ const emitirMovimentoPeca = (idSala, dadosPartida) => {
 
 const emitirFimDeJogo = (sala, oncaVenceu) => {
     pecaVencedora = oncaVenceu ? 0 : 1
-    io.in(sala.id).emit('serverFimDeJogo', { pecaVencedora })
+    const nomeVencedor = oncaVenceu ? sala.nomeJogadorOnca: sala.nomeJogadorCachorro
+    io.in(sala.id).emit('serverFimDeJogo', { pecaVencedora, nomeVencedor })
 }
 const timer = (idSala, movimento) => {
     setTimeout(() => {

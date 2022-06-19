@@ -19,10 +19,12 @@ const getNovaSala = (socketId, user, pecaSelecionada) => {
         if (pecaSelecionada === 1) {
             sala.cachorro = socketId
             sala.idJogadorCachorro = id
+            sala.nomeJogadorCachorro = nome
         }
         else {
             sala.onca = socketId
             sala.idJogadorOnca = id
+            sala.nomeJogadorOnca = nome
         }
         cache.set(idSala, JSON.stringify(sala), { ttl: TTL_SALA })
         inserirSalaDisponivel({ id_sala: idSala, peca_disponivel: +!pecaSelecionada, user: nome, id_user: id })
