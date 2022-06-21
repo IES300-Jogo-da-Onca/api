@@ -142,7 +142,7 @@ io.on('connection', socket => {
             })
             sala.dadosPartida = {
                 vetorTabuleiro: Jogo.getTabuleiroInicial(),
-                placar: 0,
+                placar: 4,
                 movimento: 0,
                 houveCaptura: false,
                 posicaoOnca: [2, 2],
@@ -256,6 +256,6 @@ const timer = (idSala, movimento) => {
             })
             timer(idSala, sala.dadosPartida.movimento)
         }
-    }, 10500);
+    }, 20500);
 
 }
