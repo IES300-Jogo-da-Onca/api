@@ -165,6 +165,7 @@ io.on('connection', socket => {
 
     socket.on('moverPeca', data => {
         timerParaJogada = true
+        let emitirSomOnca = false
         sala = getSala(socket.handshake.session.sala)
         if (!sala) {
             return socket.emit('error', { mensagem: 'sala não existe' })
@@ -192,6 +193,7 @@ io.on('connection', socket => {
         }
 
         if (houveCaptura) {
+            emitirSomOnca = true
             sala.dadosPartida.placar++
             oncaContinuaCaptura = Jogo.getPossiveisMovimentos(x, y, false, novoTabuleiro, true)
                 .some(item => dist(x, y, item[0], item[1] == 2))
@@ -212,7 +214,8 @@ io.on('connection', socket => {
             novoTabuleiro,
             turnoPeca: sala.dadosPartida.turnoPeca,
             placar: sala.dadosPartida.placar,
-            houveCaptura
+            houveCaptura,
+            emitirSomOnca
         })
         salvarSala(sala)
         if (sala.dadosPartida.placar == 5) {
