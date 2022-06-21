@@ -142,7 +142,7 @@ io.on('connection', socket => {
             })
             sala.dadosPartida = {
                 vetorTabuleiro: Jogo.getTabuleiroInicial(),
-                placar: 4,
+                placar: 0,
                 movimento: 0,
                 houveCaptura: false,
                 posicaoOnca: [2, 2],
@@ -252,7 +252,8 @@ const timer = (idSala, movimento) => {
                 novoTabuleiro: sala.dadosPartida.vetorTabuleiro,
                 turnoPeca: sala.dadosPartida.turnoPeca,
                 placar: sala.dadosPartida.placar,
-                houveCaptura: sala.dadosPartida.houveCaptura
+                houveCaptura: sala.dadosPartida.houveCaptura,
+                timer: true
             })
             timer(idSala, sala.dadosPartida.movimento)
         }
