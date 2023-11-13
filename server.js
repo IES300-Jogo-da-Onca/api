@@ -263,3 +263,6 @@ const timer = (idSala, movimento) => {
     }, 20500);
 
 }
+
+// Export the Express API
+module.exports = app;
