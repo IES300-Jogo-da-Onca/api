@@ -56,10 +56,10 @@ io.use(function (socket, next) {
     });
 })
 
-db.authenticate()
-    .then(() =>
-        server.listen(process.env.PORT || 3001, () => console.log(process.env.HOST || 'http://localhost/3001')))
-    .catch(console.error)
+//db.authenticate()
+    //.then(() =>
+        server.listen(process.env.PORT || 3001, () => console.log(process.env.HOST || 'http://localhost:3001')) //)
+    //.catch(console.error)
 
 io.on('connection', socket => {
     console.log(`user ${socket.handshake.session.user.nome} conectou. socket id: ${socket.id}`)
