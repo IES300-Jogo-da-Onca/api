@@ -8,6 +8,11 @@ const { QueryTypes } = require('sequelize')
 const { getSalasDisponiveis } = require('./utils.js')
 const { receiveMessageOnPort } = require('worker_threads')
 
+router.get('/', (req, res) => {
+    res.status(200).json({
+        teste: "testando 123"
+    })
+})
 
 router.post('/login', rotaUsuarioNaoLogado, verificaLogin)
 
