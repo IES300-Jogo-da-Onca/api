@@ -44,9 +44,8 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
         and skin.id not in (select idSkin from compra where idUsuario = 2)
         and valor = (select min(valor) from venda 
           join season on season.id = venda.idSeason
-          join skin skin2 on skin.id = venda.idSkin
+          join skin on skin.id = venda.idSkin
           where now() BETWEEN inicioVigencia and fimVigencia
-          and skin2.id = skin.id
         );
 `
 
@@ -55,7 +54,7 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
                 id: req.session.user.id
             }
         })
-        console.log("Returned from DB: ", results)
+        // console.log("Returned from DB: ", results)
         data = results.map(item => {
             return {
                 idSkin: item.idSkin,
