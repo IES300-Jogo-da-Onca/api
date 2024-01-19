@@ -5,11 +5,11 @@ const session = require('express-session')
 const http = require('http');
 const { Server } = require("socket.io");
 const app = express()
-const router = require('./rotas.js')
-const db = require('./db.js')
+const router = require('../rotas.js')
+const db = require('../db.js')
 const { getNovaSala, removerSala, getSala, salvarSala, dist, getSkinsPartida,
-    getSalasDisponiveis, removerSalaDisponível } = require('./utils.js')
-const Jogo = require('./Jogo.js')
+    getSalasDisponiveis, removerSalaDisponível } = require('../utils.js')
+const Jogo = require('../Jogo.js')
 const cookieParser = require('cookie-parser');
 const cookie = cookieParser(SECRET)
 const server = http.createServer(app)
