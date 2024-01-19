@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "test": "jest --silent=false",
-    "debug": "jest --sileit=false --runInBand"
+    "debug": "jest --sileit=false --runInBand",
+    "start": "node api/index.js"
   },
   "devDependencies": {
     "jest": "^28.0.3",
