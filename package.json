@@ -5,7 +5,7 @@
     "test": "jest --silent=false",
     "debug": "jest --sileit=false --runInBand",
     "start": "node api/index.js",
-    "vercel-build": "echo HELLO!! We're building ..."
+    "vercel-build": "echo HELLO!! Were building ..."
   },
   "devDependencies": {
     "jest": "^28.0.3",
