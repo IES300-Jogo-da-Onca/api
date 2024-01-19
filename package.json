@@ -4,7 +4,8 @@
     "dev": "nodemon index.js",
     "test": "jest --silent=false",
     "debug": "jest --sileit=false --runInBand",
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "vercel-build": "echo HELLO!! We're building ..."
   },
   "devDependencies": {
     "jest": "^28.0.3",
