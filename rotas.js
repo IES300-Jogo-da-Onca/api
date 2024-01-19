@@ -9,7 +9,7 @@ const { getSalasDisponiveis } = require('./utils.js')
 const { receiveMessageOnPort } = require('worker_threads')
 
 // Testing Vercel build
-router.get('/', (req, res) => {
+router.get('/api', (req, res) => {
     res.status(200).json({
         teste: "testando 123"
     })
