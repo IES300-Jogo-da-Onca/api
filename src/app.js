@@ -44,9 +44,6 @@ app.use(session({
 
 app.use((req, res, next) => {
   const origin = req.headers.origin?.indexOf('localhost') != -1 ? req.headers.origin : process.env.HOST
-  console.log('====================================');
-  console.log("Origin: ", req.headers.origin, "\nMethod: ", req.method);
-  console.log('====================================');
   res.header("Access-Control-Allow-Origin", origin);
   res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
   res.header("Access-Control-Allow-Credentials", true)
