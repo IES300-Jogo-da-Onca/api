@@ -3,6 +3,7 @@
 /* eslint-disable space-infix-ops */
 /* eslint-disable import/no-extraneous-dependencies */
 const express = require('express');
+const cors = require('cors')
 const crypto = require('crypto');
 // const { receiveMessageOnPort } = require('worker_threads');
 const { QueryTypes } = require('sequelize');
@@ -124,9 +125,9 @@ router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
   let result;
   try {
     const query = `
-            select @moedas:= moedas from usuario where idUsuario = :id_usuario;
+            select @moedas := moedas from usuario where idUsuario = :id_usuario;
 
-            select @valor:=valor from venda
+            select @valor := valor from venda
             join season on season.id = venda.idSeason
             join skin on skin.id = venda.idSkin
             where now() between season.inicioVigencia and season.fimVigencia

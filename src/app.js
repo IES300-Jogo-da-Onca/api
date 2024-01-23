@@ -34,11 +34,23 @@ app.use(session({
   name: KEY,
 }));
 
+// app.use((req, res, next) => {
+//     if (req.method === "OPTIONS") {
+//       res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
+//       return res.status(200).json({});
+//     }
+//     return next();
+//   });
+
 app.use((req, res, next) => {
   const origin = req.headers.origin?.indexOf('localhost') != -1 ? req.headers.origin : process.env.HOST
+  console.log('====================================');
+  console.log("Origin: ", req.headers.origin, "\nMethod: ", req.method);
+  console.log('====================================');
   res.header("Access-Control-Allow-Origin", origin);
+  res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
   res.header("Access-Control-Allow-Credentials", true)
-  res.header("Access-Control-Allow-Headers", "Content-Type")
+  res.header("Access-Control-Allow-Headers", "X-Requested-With,Content-Type")
   return next()
 })
 app.use(express.urlencoded({ extended: true }))
@@ -48,7 +60,7 @@ const server = http.createServer(app);
 
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 
 const io = new Server(server, {

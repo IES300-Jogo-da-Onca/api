@@ -9,6 +9,8 @@ const db = require('./db');
 */
 const verificaLogin = async (req, res) => {
   const { login, senha } = req.body;
+
+  console.log("Fazendo login...");
   try {
     const senhaHash = await crypto.createHash('sha256').update(senha).digest('hex');
 
@@ -37,10 +39,10 @@ const verificaLogin = async (req, res) => {
       req.session.user = userSession;
       return res.status(200).json({ mensagem: 'usuário logado', data: user[0] });
     }
-    return res.status(402).json({ mensagem: 'credenciais inválidas', data: null });
+    res.status(402).json({ mensagem: 'credenciais inválidas', data: null });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ mensagem: error.message, data: null });
+    res.status(500).json({ mensagem: error.message, data: null });
   }
 };
 /**
@@ -57,6 +59,7 @@ const rotaUsuarioLogado = (req, res, next) => {
  * rota acessivel apenas para usuario não logado
 */
 const rotaUsuarioNaoLogado = (req, res, next) => {
+  console.log("Usuario não logado...");
   if (!req.session.user) {
     return next();
   }
