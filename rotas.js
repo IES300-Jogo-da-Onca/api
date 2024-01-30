@@ -102,47 +102,78 @@ router.post('/comprarmoeda', rotaUsuarioLogado, async (req, res) => {
 
 router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
     const { idSkin } = req.body
-    let result
+    const userId = req.session.user.id
     try {
-        query = `
-            select @moedas:= moedas from usuario where idUsuario = :id_usuario;
-
-            select @valor:=valor from venda
+        const queryCoinsBalance = `select @moedas:= moedas as coins from usuario where idUsuario = :id_usuario;`
+        const querySkinPrice = `
+            select @valor:=valor as skinPrice from venda
             join season on season.id = venda.idSeason
             join skin on skin.id = venda.idSkin
             where now() between season.inicioVigencia and season.fimVigencia
             and venda.idSkin = :id_skin
-            order by valor asc limit 1 ;
-
-            start transaction;
-                insert into compra(idUsuario, idSkin)
-                select :id_usuario, :id_skin where @moedas >= @valor
-                and :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario);
-
-                select @comprouSkin:= row_count() = 1;
-
-                update usuario set moedas = moedas - @valor
-                where idUsuario = :id_usuario
-                and @moedas >= @valor;
-
-                select @comprouSkin,
-                moedas from usuario where idUsuario = :id_usuario;
-            commit;
+            order by valor asc limit 1;
         `
-        result = await db.query(query, {
-            replacements: { id_usuario: req.session.user.id, id_skin: idSkin },
+        const queryCheckIfUserDoesntHaveSkin = `select :id_skin not in (select idSkin from compra where  idUsuario = :id_usuario) as notBuyed;`
+        const queryCreateBuyEvent = `
+            insert into compra(idUsuario, idSkin)
+            values(:id_usuario, :id_skin);
+        `
+        const queryUpdateUserCoinsBalance = `
+                update usuario set moedas = moedas - :valor_skin
+                where idUsuario = :id_usuario;
+        `
+
+        let userCoinsBalance
+        await db.query(queryCoinsBalance, {
+            replacements: { id_usuario: userId },
             type: QueryTypes.SELECT,
+        }).then(res => {
+            userCoinsBalance = res[0]?.coins
         })
-        let resposta = {}
-        Object.entries(result[6]['0']).forEach(item => {
-            if (item[0] == 'moedas') resposta.moedas = item[1]
-            else resposta.comprouSkin = item[1] == 1
+
+        let skinPrice
+        await db.query(querySkinPrice, {
+            replacements: { id_skin: idSkin },
+            type: QueryTypes.SELECT,
+        }).then(res => {
+            skinPrice = parseFloat(res[0]?.skinPrice)
         })
-        if (resposta.comprouSkin) {
-            res.json(resposta)
-        } else {
-            console.log(result)
+
+        let doesUserAlreadyBuyedSkin
+        await db.query(queryCheckIfUserDoesntHaveSkin, {
+            replacements: { id_usuario: userId, id_skin: idSkin },
+            type: QueryTypes.SELECT,
+        }).then(res => {
+            doesUserAlreadyBuyedSkin = res[0]?.notBuyed === 0
+        })
+
+        if(doesUserAlreadyBuyedSkin){
+            res.status(400).json({ mensagem: 'Usuario já possui esta Skin' })
+            return
+        }
+
+        if(userCoinsBalance >= skinPrice){
+            let successOnBuying
+            await db.query(queryCreateBuyEvent, {
+                replacements: { id_usuario: userId, id_skin: idSkin },
+                type: QueryTypes.INSERT,
+            }).then(res => {
+                successOnBuying = res[1] === 1
+                return successOnBuying
+            }).then(buyResult => {
+                if(buyResult){
+                    db.query(queryUpdateUserCoinsBalance, {
+                    replacements: { valor_skin: skinPrice, id_usuario: userId },
+                    type: QueryTypes.UPDATE,
+                    }).then(coinsUpdate => {
+                        if(coinsUpdate[1]) res.json({moedas: userCoinsBalance-skinPrice, comprouSkin: true})
+                    })
+                }else{ throw new Error("Error on creating buy event. The INSERT clouse failed while trying to add buy to compra table") }
+
+            })
+        }else{
             res.status(400).json({ mensagem: 'sem moedas suficientes' })
+            return
         }
     }
     catch (error) {
@@ -150,6 +181,7 @@ router.post('/comprarskin', rotaUsuarioLogado, async (req, res) => {
         res.status(500).json({ error })
     }
 })
+
 router.get('/logout', rotaUsuarioLogado, (req, res) => {
     req.session.destroy((error) => {
         if (!error) return res.end()
