@@ -1,24 +1,23 @@
 # Express API - Jogo da Onça:
 
-This is the API made to communicate with [Jogo da Onça](https://github.com/IES300-Jogo-da-Onca/jogo-da-onca).
+This API communicates with [Jogo da Onça](https://github.com/IES300-Jogo-da-Onca/jogo-da-onca).
 
 # Pre-requisites:
 
 - **Node.js** v16;
-- **MySQL** instance with all migrations from this repo /migrations folder performed following the numbered sequence of file names (01_CreateDatabase... , 02_skin_table.sql, 03_usuario_table.sql, and so on). To achieving this, we recommend to use MySQL Workbench or some other relative tool to connect to database and run SQL scripts.
+- **MySQL** instance with migrations from /migrations folder (follow the numbered sequence of file names: first 01_CreateDatabase.sql, then 02_skin_table.sql, then 03_usuario_table.sql, and so on). Use tools like MySQL Workbench or some other relative tool to connect to database and run SQL scripts.
 
-# Install Dev Environment?
+# Install Dev Environment:
 
-1. Clone this repository in your machine, open a terminal and navigate to the project folder;
+1. Clone the repo, navigate to the project folder in the terminal;
 2. Install dependencies with `npm install`;
-3. Create an .env file on the root of the project following the .env.example file as model. There you need to set the variables to connect to your database.
-4. Run `npm run dev` to start development server;
-5. The API will be available on http://localhost:3001.
+3. Create a .env file (model in .env.example) with database connection variables.
+4. Run `npm run dev` to start development server at http://localhost:3001.
 
 ### Tips
 
-1. Use Postman to test API calls. [https://www.getpostman.com/](https://www.getpostman.com/).
+1. Test API calls using [Postman](https://www.getpostman.com/).
 
-> You can find a postman collection on /postman-collection. You'll just need to import the file to Postman after installation and start to test!
+> Find a postman collection in /postman-collection. Just import the file to Postman after installation and start to test!
 
-2. Get "Super User" access setting the flag "ehSuperUser" to 1 on "usuario" table. This will allow you to access the management interface on the frontend of the game.
+2. Obtain "Super User" access by setting "ehSuperUser" to 1 in "usuario" table, allowing access to the game's frontend management interface.
