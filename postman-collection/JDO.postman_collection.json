@@ -1,0 +1,1116 @@
+{
+	"info": {
+		"_postman_id": "1d902c6f-3025-4e61-b703-34cec30c0b5e",
+		"name": "JDO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19871372"
+	},
+	"item": [
+		{
+			"name": "Consultar",
+			"item": [
+				{
+					"name": "consultarSkin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarSkin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarSkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarSeason",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarSeason"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarTabuleiro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarTabuleiro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarVenda",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarVenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarVenda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarSkins",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarSkins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarSkins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarTabuleiros",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarTabuleiros",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarTabuleiros"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarSeasons",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarSeasons",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarSeasons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultarVendas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/consultarVendas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"consultarVendas"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Os endpoints GET retornam todos os objetos de uma certa tabela, já os POST retornam somente o objeto com o id que você especificar no body."
+		},
+		{
+			"name": "Alterar",
+			"item": [
+				{
+					"name": "alterarVenda",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "valor",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "idSeason",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "idSkin",
+									"value": "13",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/alterarVenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"alterarVenda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarSkin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "idSkin",
+									"value": "13",
+									"type": "text"
+								},
+								{
+									"key": "nome",
+									"value": "NomeTeste",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"value": "https://i1.sndcdn.com/avatars-wmzPxL4TeWP4ccOn-LMJA2Q-t500x500.jpg",
+									"type": "text"
+								},
+								{
+									"key": "tipoPeca",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "corTematica",
+									"value": "#FF8000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/alterarSkin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"alterarSkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarTabuleiro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "idTabuleiro",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "nome",
+									"value": "Tabuleiro 2",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"value": "https://s3.sa-east-1.amazonaws.com/jogo.onca/ed1875d1-3c33-4bad-ba0c-4a4cde37d2a6logo-sem-fundo.png",
+									"type": "text"
+								},
+								{
+									"key": "corTematica",
+									"value": "#000000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/alterarTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"alterarTabuleiro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarSeason",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "nome",
+									"value": "Mes das mães",
+									"type": "text"
+								},
+								{
+									"key": "inicioVigencia",
+									"value": "2022-05-01",
+									"type": "text"
+								},
+								{
+									"key": "fimVigencia",
+									"value": "2022-05-31",
+									"type": "text"
+								},
+								{
+									"key": "idTabuleiro",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "prioridade",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/alterarSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"alterarSeason"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inserir",
+			"item": [
+				{
+					"name": "inserirSkin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nome",
+									"value": "Nova skin",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"value": "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F20%2F2022%2F04%2F22%2Fjinx-1.jpg&q=60",
+									"type": "text"
+								},
+								{
+									"key": "tipoPeca",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "corTematica",
+									"value": "#000000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/inserirSkin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"inserirSkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inserirTabuleiro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nome",
+									"value": "Novo tabuleiro",
+									"type": "text"
+								},
+								{
+									"key": "imagem",
+									"value": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Chess_Board.svg/2048px-Chess_Board.svg.png",
+									"type": "text"
+								},
+								{
+									"key": "corTematica",
+									"value": "#000000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/inserirTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"inserirTabuleiro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inserirSeason",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "nome",
+									"value": "Nova season",
+									"type": "text"
+								},
+								{
+									"key": "inicioVigencia",
+									"value": "2022-07-01",
+									"type": "text"
+								},
+								{
+									"key": "fimVigencia",
+									"value": "2022-07-31",
+									"type": "text"
+								},
+								{
+									"key": "idTabuleiro",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "prioridade",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/inserirSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"inserirSeason"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "inserirVenda",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "valor",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "idSeason",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "idSkin",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/inserirVenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"inserirVenda"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Não é necessário incluir o ID do registro que está sendo incluído nas requisições. O banco coloca sozinho o autoincremento"
+		},
+		{
+			"name": "Remover",
+			"item": [
+				{
+					"name": "removerSkin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "17",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/removerSkin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"removerSkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removerTabuleiro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "6",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/removerTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"removerTabuleiro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removerSeason",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "7",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/removerSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"removerSeason"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "removerVenda",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "8",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/removerVenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"removerVenda"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "O mbanco não remove o registro caso tenha outro dependendo dele. Pra verificar antes, usar os endpoints na pasta de Verificacoes."
+		},
+		{
+			"name": "Autoincrement",
+			"item": [
+				{
+					"name": "autoIncrementSkin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/autoIncrementSkin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"autoIncrementSkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "autoIncrementTabuleiro",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/autoIncrementTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"autoIncrementTabuleiro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "autoIncrementSeason",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/autoIncrementSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"autoIncrementSeason"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "autoIncrementVenda",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:3001/autoIncrementTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"autoIncrementTabuleiro"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Os endpoints de autoincrement retornam qual será o ID do proximo registro inserido na tabela. Usa eles pra pegar o ID e mostrar na tela de cadastro de nova informação. Assim é possível mostrar ao superuser que \"a skin que você está cadastrando terá X id\" isso na textbox mesmo, assim como estava no CRUD local."
+		},
+		{
+			"name": "Verificacoes",
+			"item": [
+				{
+					"name": "isRemovivelSkin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "13",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/isRemovivelSkin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"isRemovivelSkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "isRemovivelTabuleiro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/isRemovivelTabuleiro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"isRemovivelTabuleiro"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "isRemovivelSeason",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/isRemovivelSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"isRemovivelSeason"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "isPeriodoDisponivelSeason",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "inicio",
+									"value": "2022-12-25",
+									"type": "text"
+								},
+								{
+									"key": "fim",
+									"value": "2022-12-25",
+									"type": "text"
+								},
+								{
+									"key": "prioridade",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/isPeriodoDisponivelSeason",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"isPeriodoDisponivelSeason"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jogo",
+			"item": [
+				{
+					"name": "Verificar salas disponiveis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/salasDisponiveis",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"salasDisponiveis"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "Registrar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\":\"Teste README\",\r\n    \"senha\":\"123456\",\r\n    \"login\":\"testeREAD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "imageStoreAwsJDO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "arquivo",
+							"type": "file",
+							"src": "/D:/Libraries/Academic/Fatec/IES-300/JdoCRUD/bin/Debug/JdoCRUD 1.4 novo banco/SkinLobo_AraraAzul.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://52.67.31.76:8000",
+					"protocol": "http",
+					"host": [
+						"52",
+						"67",
+						"31",
+						"76"
+					],
+					"port": "8000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LoginJDO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "login",
+							"value": "testeREAD",
+							"type": "text"
+						},
+						{
+							"key": "senha",
+							"value": "123456",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LogoutJDO",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
