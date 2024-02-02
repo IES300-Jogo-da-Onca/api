@@ -37,7 +37,7 @@ CREATE TABLE `tabuleiro` (
 --
 
 /*!40000 ALTER TABLE `tabuleiro` DISABLE KEYS */;
-INSERT INTO `tabuleiro` VALUES (1,'Tabuleiro base','https://s6.imgcdn.dev/fz8T2.png','2022-05-10','#00FF00'),(2,'Tabulerido 2','https://s6.imgcdn.dev/fay7v.png','2022-05-10','#000000');
+INSERT INTO `tabuleiro` VALUES (1,'Tabuleiro base','https://i.imgur.com/76eAvFY.png','2022-05-10','#9d009d'),(2,'Tabulerido 2','https://i.imgur.com/ixzW2ho.png','2022-05-10','#000000');
 /*!40000 ALTER TABLE `tabuleiro` ENABLE KEYS */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ INSERT INTO `tabuleiro` VALUES (1,'Tabuleiro base','https://s6.imgcdn.dev/fz8T2.
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-19  9:34:08
+-- Dump completed on 2024-02-02 12:34:24

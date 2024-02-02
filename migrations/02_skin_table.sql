@@ -29,7 +29,7 @@ CREATE TABLE `skin` (
   `tipoPeca` tinyint NOT NULL,
   `corTematica` varchar(9) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `skin` (
 --
 
 /*!40000 ALTER TABLE `skin` DISABLE KEYS */;
-INSERT INTO `skin` VALUES (1,'Onça padrão','https://s6.imgcdn.dev/fzJRi.png',0,'#FF8000'),(3,'Cachorro base','https://s6.imgcdn.dev/fasCg.png',1,'#000000'),(4,'Cervo','https://s6.imgcdn.dev/faIoK.png',1,'#CFB33F'),(5,'Leão','https://s6.imgcdn.dev/faixO.png',0,'#8B6025'),(6,'Gato','https://s6.imgcdn.dev/faQno.png',0,'#000000'),(7,'Rato','https://s6.imgcdn.dev/fakHn.png',1,'#E2E7D8');
+INSERT INTO `skin` VALUES (1,'Onça padrão','https://i.imgur.com/BITQgj8.png',0,'#FF8000'),(3,'Cachorro base','https://i.imgur.com/8l7PnMC.png',1,'#000000'),(4,'Cervo','https://i.imgur.com/zKXnSur.png',1,'#CFB33F'),(5,'Leão','https://i.imgur.com/wciVIOh.png',0,'#8B6025'),(6,'Gato','https://i.imgur.com/GTO7vht.png',0,'#000000'),(7,'Rato','https://i.imgur.com/UY1ZrDL.png',1,'#E2E7D8'),(8,'Pantera','https://i.imgur.com/bHcsPcY.png',0,'#000000'),(9,'Harpia','https://i.imgur.com/k8jVVcJ.png',0,'#8e8e8e'),(10,'Lobo Guara','https://i.imgur.com/cBtGFDR.png',0,'#eb5114');
 /*!40000 ALTER TABLE `skin` ENABLE KEYS */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ INSERT INTO `skin` VALUES (1,'Onça padrão','https://s6.imgcdn.dev/fzJRi.png',0
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-19  9:38:04
+-- Dump completed on 2024-02-02 12:32:58

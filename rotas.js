@@ -41,12 +41,7 @@ router.get('/loja', rotaUsuarioLogado, async (req, res) => {
         join season on season.id = venda.idSeason
         join skin on skin.id = venda.idSkin
         where now() BETWEEN inicioVigencia and fimVigencia
-        and skin.id not in (select idSkin from compra where idUsuario = 2)
-        and valor = (select min(valor) from venda 
-          join season on season.id = venda.idSeason
-          join skin on skin.id = venda.idSkin
-          where now() BETWEEN inicioVigencia and fimVigencia
-        );
+        and skin.id not in (select idSkin from compra where idUsuario = 2);
 `
 
         const [results] = await db.query(queryString, {
