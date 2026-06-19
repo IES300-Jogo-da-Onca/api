@@ -40,7 +40,7 @@ CREATE TABLE `season` (
 --
 
 /*!40000 ALTER TABLE `season` DISABLE KEYS */;
-INSERT INTO `season` VALUES (1,'Natal','2022-12-20','2024-12-31',2,1),(2,'Natal 25','2022-12-25','2024-12-31',1,2),(3,'Base','2022-01-01','2024-12-31',1,0),(4,'Mês das mães','2022-05-01','2024-12-31',2,1);
+INSERT INTO `season` VALUES (1,'Natal','2022-12-20','2024-12-31',2,1),(2,'Natal 25','2022-12-25','2024-12-31',1,2),(3,'Base','2022-01-01','2039-12-31',1,0),(4,'Mês das mães','2022-05-01','2024-12-31',2,1);
 /*!40000 ALTER TABLE `season` ENABLE KEYS */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
